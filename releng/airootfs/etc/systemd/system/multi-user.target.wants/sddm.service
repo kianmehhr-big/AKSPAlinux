@@ -1,0 +1,4 @@
+[Unit]
+Description=SDDM
+[Service]
+ExecStart=/usr/bin/sddm
