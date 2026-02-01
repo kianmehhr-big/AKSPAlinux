@@ -161,7 +161,3 @@ konsole
 plasma-nm
 xf86-video-intel
 mesa
-nvidia
-nvidia-utils
-lib32-nvidia-utils
-nvidia-settings
