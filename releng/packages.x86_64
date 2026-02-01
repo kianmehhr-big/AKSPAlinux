@@ -163,7 +163,6 @@ xf86-video-intel
 mesa
 plasma-wayland-session
 nvidia
-nvidia-lts
 nvidia-utils
 lib32-nvidia-utils
 nvidia-settings
