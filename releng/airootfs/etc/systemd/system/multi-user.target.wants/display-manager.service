@@ -1,9 +1,10 @@
 [Unit]
-Description=SDDM Display Manager
-After=systemd-user-sessions.service plymouth-quit-active.service getty@tty1.service
+Description=SDDM
+After=systemd-user-sessions.service getty@tty1.service
 
 [Service]
 ExecStart=/usr/bin/sddm
+Restart=always
 
 [Install]
 Alias=display-manager.service
