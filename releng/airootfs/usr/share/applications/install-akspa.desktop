@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Install AKSPA Linux
+Exec=sudo calamares
+Icon=system-installer
+Type=Application
+Categories=System;
+

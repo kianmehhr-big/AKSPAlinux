@@ -148,8 +148,11 @@ wayland-protocols
 libinput
 libxkbcommon
 seatd
+<<<<<<< HEAD
 chaotic-keyring
 chaotic-mirrorlist
+=======
+>>>>>>> 6b296a8 (calamares setting up test)
 qt5-svg
 qt5-xmlpatterns
 ki18n
@@ -159,8 +162,19 @@ plasma-desktop
 sddm
 konsole
 plasma-nm
+<<<<<<< HEAD
 xf86-video-intel
 mesa
 nvidia-dkms
 nvidia-utils
 lib32-nvidia-utils
+=======
+calamares
+kpmcore
+boost
+yaml-cpp
+rsync
+grub
+efibootmgr
+os-prober
+>>>>>>> 6b296a8 (calamares setting up test)

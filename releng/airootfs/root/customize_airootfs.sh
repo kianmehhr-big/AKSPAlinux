@@ -6,8 +6,8 @@ echo "==> AKSPAlinux customize_airootfs.sh started"
 # --------------------------------------------------
 # Pacman keyring (required for Chaotic-AUR)
 # --------------------------------------------------
-pacman-key --init
-pacman-key --populate archlinux chaotic
+#pacman-key --init
+#pacman-key --populate archlinux chaotic
 
 # --------------------------------------------------
 # Locale
