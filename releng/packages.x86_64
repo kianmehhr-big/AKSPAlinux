@@ -148,8 +148,6 @@ wayland-protocols
 libinput
 libxkbcommon
 seatd
-chaotic-keyring
-chaotic-mirrorlist
 qt5-svg
 qt5-xmlpatterns
 ki18n
