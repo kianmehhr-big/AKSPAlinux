@@ -1,10 +1,1 @@
-[Unit]
-Description=SDDM
-After=systemd-user-sessions.service getty@tty1.service
-
-[Service]
-ExecStart=/usr/bin/sddm
-Restart=always
-
-[Install]
-Alias=display-manager.service
+/usr/lib/systemd/system/sddm.service
