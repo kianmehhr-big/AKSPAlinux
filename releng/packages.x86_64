@@ -157,7 +157,6 @@ plasma-desktop
 sddm
 konsole
 plasma-nm
-xf86-video-intel
 mesa
 nvidia-dkms
 nvidia-utils
