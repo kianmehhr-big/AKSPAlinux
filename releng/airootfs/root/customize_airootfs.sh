@@ -47,7 +47,7 @@ systemctl enable sshd.service
 # --------------------------------------------------
 # Calamares (installer)
 # --------------------------------------------------
-systemctl enable calamares.service || true
+# systemctl enable calamares.service || true
 
 # --------------------------------------------------
 # Cleanup
