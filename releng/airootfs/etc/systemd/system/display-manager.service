@@ -1,1 +1,1 @@
-sddm.service
+/usr/lib/systemd/system/sddm.service

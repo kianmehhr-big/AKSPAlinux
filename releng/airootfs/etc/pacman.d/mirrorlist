@@ -39,6 +39,7 @@ Server = https://mirror.hostiran.ir/archlinux/$repo/os/$arch
 Server = http://repo.iut.ac.ir/repo/archlinux/$repo/os/$arch
 Server = http://mirror.nak-mci.ir/arch/$repo/os/$arch
 
+
 ##
 ## Arch Linux repository mirrorlist
 ## Generated on 2025-01-02

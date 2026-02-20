@@ -9,7 +9,7 @@ bind
 bolt
 brltty
 broadcom-wl
-btrfs-progs
+
 clonezilla
 cloud-init
 cryptsetup
@@ -170,3 +170,4 @@ grub
 efibootmgr
 os-prober
 firefox
+gparted
