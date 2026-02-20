@@ -57,3 +57,12 @@ rm -f /root/.bash_history
 
 echo "==> AKSPAlinux customize_airootfs.sh finished"
 
+# ensure liveuser group exists
+groupadd -f liveuser
+
+# fix user primary group
+usermod -g liveuser liveuser
+
+# fix home ownership
+chown -R liveuser:liveuser /home/liveuser
+chmod 700 /home/liveuser
