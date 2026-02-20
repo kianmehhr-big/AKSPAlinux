@@ -7,12 +7,12 @@ on:
 
 jobs:
   build:
-    if: github.repository == 'pouya3767/AKSPAlinux' # only runs in main repo
+    if: github.repository == 'pouya3767/AKSPAlinux'
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout source repo
-        uses: actions/checkout@v4 # get AKSPAlinux source
+        uses: actions/checkout@v4
 
       - name: Start Arch Linux container
         run: |
@@ -20,14 +20,12 @@ jobs:
             --privileged \
             -v $PWD:/workspace \
             archlinux:latest tail -f /dev/null
-          # start privileged Arch container for building ISO
 
       - name: Install archiso tools
         run: |
           docker exec archiso pacman -Sy --noconfirm
           docker exec archiso pacman -S --noconfirm \
             archiso git squashfs-tools xorriso grub
-          # install required tools for building the ISO
 
       - name: Build ISO
         run: |
@@ -36,35 +34,41 @@ jobs:
             mkdir -p out &&
             mkarchiso -v releng -o out
           "
-          # build the ISO inside container
 
       - name: Copy ISO out of container
         run: |
           docker exec archiso bash -lc "cp /workspace/out/*.iso /workspace"
-          # copy built ISO to GitHub runner workspace
 
       - name: Stop container
         if: always()
         run: docker stop archiso
-        # stop the Arch container even if previous steps fail
 
       - name: Generate ISO tag for release
         id: vars
         run: echo "ISO_TAG=akspalinux-$(date +%Y.%m.%d)" >> $GITHUB_ENV
-        # create properly formatted tag name for GitHub Release
 
       - name: Generate checksum # sha256sum
         run: |
           ISO_FILE=$(ls *.iso | head -n 1)
           sha256sum "$ISO_FILE" > "$ISO_FILE".sha256
-        # generate SHA256 checksum
+
+      - name: Upload ISO as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: AkapaLinux-ISO-${{ env.ISO_TAG }}
+          path: "*.iso"
+
+      - name: Upload checksum as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: AkapaLinux-ISO-Checksum-${{ env.ISO_TAG }}
+          path: "*.sha256"
 
       - name: Create remote tag in AKSPAISO if it does not exist
         run: |
           git clone https://x-access-token:${{ secrets.ISO_PUSH_TOKEN }}@github.com/pouya3767/AKSPAISO.git iso-repo
           cd iso-repo
           git checkout master
-          # check if tag exists remotely
           if git ls-remote --tags origin | grep -q "refs/tags/$ISO_TAG"; then
             echo "Tag $ISO_TAG already exists on remote"
           else
@@ -75,38 +79,6 @@ jobs:
           git fetch --tags
         env:
           ISO_TAG: ${{ env.ISO_TAG }}
-        # safely create tag only if it does not already exist
 
       - name: Wait for GitHub to register tag
         run: sleep 10
-        # ensures GitHub sees the new tag before creating release
-
-      - name: Create GitHub Release and upload ISO + checksum
-        uses: softprops/action-gh-release@v1
-        with:
-          repository: pouya3767/AKSPAISO
-          tag_name: ${{ env.ISO_TAG }}
-          name: ${{ env.ISO_TAG }}
-          body: "Automated ISO build"
-          files: "*.iso,*.sha256"
-        env:
-          GITHUB_TOKEN: ${{ secrets.ISO_PUSH_TOKEN }}
-        # creates the release and uploads ISO + checksum in a single step
-
-# Deprecated method (pushing ISO directly to repo) left commented for reference
-#      - name: Clone ISO repository
-#        run: |
-#          git clone https://x-access-token:${{ secrets.ISO_PUSH_TOKEN }}@github.com/pouya3767/AKSPAISO.git iso-repo
-#
-#      - name: Push ISO to AKSPAISO repo
-#        run: |
-#          ISO_FILE=$(ls out/*.iso | head -n 1)
-#          cp "$ISO_FILE" iso-repo/
-#          cd iso-repo
-#          git config user.name "github-actions"
-#          git config user.email "actions@github.com"
-#          git add *.iso
-#          git commit -m "New AKSPAlinux ISO build ($(date +'%Y-%m-%d'))"
-#          git push
-# Replaced by GitHub Releases for large ISO handling
-
