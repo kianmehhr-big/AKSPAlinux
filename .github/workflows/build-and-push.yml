@@ -53,13 +53,13 @@ jobs:
           sha256sum "$ISO_FILE" > "$ISO_FILE".sha256
 
       - name: Upload ISO as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: AkapaLinux-ISO-${{ env.ISO_TAG }}
           path: "*.iso"
 
       - name: Upload checksum as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: AkapaLinux-ISO-Checksum-${{ env.ISO_TAG }}
           path: "*.sha256"
