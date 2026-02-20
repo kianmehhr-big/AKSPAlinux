@@ -1,0 +1,21 @@
+---
+componentName: akspa
+
+welcomeStyleCalamares: true
+
+windowExpanding: normal
+windowPlacement: free
+
+sidebar: widget-left
+navigation: widget-bottom
+
+strings:
+  productName: AKSPA Linux
+  shortProductName: AKSPA
+  version: "rolling"
+  shortVersion: "rolling"
+  slogan: "Power with precision"
+
+# MUST exist
+slideshow: []
+
