@@ -1,21 +1,40 @@
 ---
 componentName: akspa
 
-welcomeStyleCalamares: true
-
-windowExpanding: normal
-windowPlacement: free
-
-sidebar: widget-left
-navigation: widget-bottom
-
 strings:
-  productName: AKSPA Linux
+  productName: AKSPALinux
   shortProductName: AKSPA
-  version: "rolling"
-  shortVersion: "rolling"
-  slogan: "Power with precision"
+  productVersion: 2026
+  shortProductVersion: 2026
+  versionedName: AKSPALinux 2026
+  shortVersionedName: AKSPA 2026
+  bootloaderEntryName: AKSPA
+  productUrl: "https://github.com/pouya3767/akspalinux"
+  supportUrl: "https://github.com/pouya3767/akspalinux/issues"
 
-# MUST exist
+images:
+  productIcon: "akspa-logo.png"
+  productLogo: "akspa-logo.png"
+  productWelcome: "p0uya3767.png"
+
 slideshow: []
+
+style:
+  sidebarBackground: "#1E2228"
+  sidebarText: "#FFFFFF"
+  sidebarTextHighlight: "#FF6B00"
+  sidebarSelect: "#2C313A"
+
+  windowBackground: "#1A1D22"
+  windowText: "#FFFFFF"
+
+  buttonBackground: "#FF6B00"
+  buttonText: "#FFFFFF"
+  buttonHover: "#FF7F24"
+
+  progressBarBackground: "#2C313A"
+  progressBarChunk: "#FF6B00"
+
+showSupportUrl: true
+showKnownIssuesUrl: false
 
