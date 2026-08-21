@@ -1,0 +1,11 @@
+[Unit]
+Description=علامت‌گذاری بوت موفق برای systemd-boot
+After=graphical.target sddm.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/ab-mark-good.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=graphical.target
