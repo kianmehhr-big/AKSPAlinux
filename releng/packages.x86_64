@@ -171,3 +171,6 @@ efibootmgr
 os-prober
 firefox
 gparted
+arch-install-scripts
+parted
+rsync
