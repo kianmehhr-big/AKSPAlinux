@@ -1,0 +1,12 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Operation = Remove
+Type = Package
+Target = *
+
+[Action]
+Description = گرفتن snapshot از اسلات فعال...
+When = PreTransaction
+Exec = /usr/local/bin/ab-snapshot.sh
+AbortOnFail
