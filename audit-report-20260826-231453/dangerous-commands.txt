@@ -1,9 +1,0 @@
-5:systemctl enable sddm
-39:systemctl enable seatd.service
-42:systemctl enable NetworkManager.service
-45:systemctl enable sshd.service
-50:# systemctl enable calamares.service || true
-55:rm -rf /var/cache/pacman/pkg/*
-515:    rm -rf "$TMP_HOME"
-1103:            'rm[[:space:]]+-rf|mkfs|dd[[:space:]]+if=|wipefs|sgdisk|fdisk|parted|mount|umount|pacman[[:space:]]+-R|systemctl[[:space:]]+enable' \
-1337:    rm -rf "$SIM_HOME"

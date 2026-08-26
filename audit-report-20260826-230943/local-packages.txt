@@ -1,2 +1,0 @@
-/home/kskroyal/AKSPAlinux/releng/airootfs/opt/akspa-repo/x86_64/calamares-3.3.14-1-x86_64.pkg.tar.zst
-/home/kskroyal/AKSPAlinux/releng/airootfs/opt/akspa-repo/x86_64/calamares-debug-3.3.14-1-x86_64.pkg.tar.zst

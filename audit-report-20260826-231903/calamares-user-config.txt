@@ -1,6 +1,0 @@
-/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/settings.conf:22:      - users
-/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/settings.conf:31:      - users
-/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/settings.conf:32:      - akspa-user-config
-/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/ab-snapshot.sh:18:    --exclude={"/proc/*","/sys/*","/dev/*","/tmp/*","/run/*","/mnt/*","/home/*","/var/log/*"} \
-/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/akspa-install.sh:22:mkdir -p /mnt/boot /mnt/home
-/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/akspa-install.sh:24:mount "${TARGET_DISK}4" /mnt/home

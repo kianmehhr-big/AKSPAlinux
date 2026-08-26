@@ -1,5 +1,0 @@
-/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/choose-mirror.service
-/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/ModemManager.service
-/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/pacman-init.service
-/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/systemd-networkd.service
-/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/systemd-resolved.service
