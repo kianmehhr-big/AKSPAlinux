@@ -1,0 +1,1184 @@
+
+============================================================
+AKSPA LINUX ISO - FULL PRE-FLIGHT AUDIT
+============================================================
+Project root : /home/kskroyal/AKSPAlinux
+Report       : /home/kskroyal/AKSPAlinux/audit-report-20260826-230956
+Date         : Wed Aug 26 11:09:56 PM +0330 2026
+Kernel       : 7.1.8-arch1-3
+Host         : x86_64
+User         : kskroyal
+
+============================================================
+1. HOST BUILD TOOLS
+============================================================
+[PASS] Required tool exists: mkarchiso
+[PASS] Required tool exists: pacman
+[PASS] Required tool exists: awk
+[PASS] Required tool exists: sed
+[PASS] Required tool exists: grep
+[PASS] Required tool exists: find
+[PASS] Required tool exists: file
+[PASS] Required tool exists: stat
+[PASS] Required tool exists: readlink
+[PASS] Required tool exists: bash
+[PASS] Optional audit tool exists: xorriso
+[WARN] Optional audit tool missing: isoinfo
+[PASS] Optional audit tool exists: bsdtar
+[PASS] Optional audit tool exists: unsquashfs
+[PASS] Optional audit tool exists: cpio
+[WARN] Optional audit tool missing: shellcheck
+[WARN] Optional audit tool missing: qemu-system-x86_64
+[PASS] Optional audit tool exists: efibootmgr
+
+============================================================
+2. PROJECT STRUCTURE
+============================================================
+[INFO] Top-level project files/directories:
+/home/kskroyal/AKSPAlinux/akspa-audit-final.txt
+/home/kskroyal/AKSPAlinux/akspa-full-audit.sh
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/audit.log
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/boot-files.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/broken-symlinks.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/build-env-references.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/build-path-leaks.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/calamares-files.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/calamares-user-config.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/dangerous-commands.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/enabled-services.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/external-packages.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/git-status.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/hardcoded-home-paths.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/kde-environment.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/local-packages.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/metadata.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/non-root-owned-files.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/os-release.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/package-duplicates.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/packages-clean.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/pacman-config.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/profiledef-important.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/project-tree.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/referenced-paths.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/sddm-files.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/simulated-kde-config.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/simulated-user-home
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/skel-tree.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/summary.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/suspicious-package-lines.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/systemd-files.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/test-home
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/users.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230943/world-writable.txt
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230956
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230956/audit.log
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230956/project-tree.txt
+/home/kskroyal/AKSPAlinux/.github
+/home/kskroyal/AKSPAlinux/.github/workflows
+/home/kskroyal/AKSPAlinux/.gitignore
+/home/kskroyal/AKSPAlinux/out
+/home/kskroyal/AKSPAlinux/releng
+/home/kskroyal/AKSPAlinux/releng/airootfs
+/home/kskroyal/AKSPAlinux/releng/bootstrap_packages
+/home/kskroyal/AKSPAlinux/releng/customize_airootfs.sh
+/home/kskroyal/AKSPAlinux/releng/efiboot
+/home/kskroyal/AKSPAlinux/releng/grub
+/home/kskroyal/AKSPAlinux/releng/packages.x86_64
+/home/kskroyal/AKSPAlinux/releng/packages.x86_64.backup
+/home/kskroyal/AKSPAlinux/releng/pacman.conf
+/home/kskroyal/AKSPAlinux/releng/profiledef.sh
+/home/kskroyal/AKSPAlinux/releng/syslinux
+
+============================================================
+3. ARCHISO PROFILE DETECTION
+============================================================
+[PASS] ArchISO profile detected: /home/kskroyal/AKSPAlinux/releng
+
+============================================================
+4. ARCHISO PROFILE FILES
+============================================================
+[PASS] Profile file exists: profiledef.sh
+[PASS] Profile file exists: packages.x86_64
+[PASS] Profile component exists: pacman.conf
+[PASS] Profile component exists: airootfs
+[PASS] Profile component exists: efiboot
+[PASS] Profile component exists: syslinux
+
+============================================================
+5. AIROOTFS
+============================================================
+[PASS] airootfs detected: /home/kskroyal/AKSPAlinux/releng/airootfs
+
+============================================================
+6. AIROOTFS STANDARD LAYOUT
+============================================================
+[PASS] airootfs/etc exists
+[PASS] airootfs/usr exists
+[WARN] airootfs/var does not exist
+[PASS] airootfs/root exists
+[WARN] airootfs/home does not exist
+[PASS] airootfs/opt exists
+
+============================================================
+7. IMPORTANT SYSTEM FILES
+============================================================
+[PASS] Found: etc/passwd
+[PASS] Found: etc/group
+[PASS] Found: etc/shadow
+[PASS] Found: etc/os-release
+[PASS] Found: etc/hostname
+[PASS] Found: etc/locale.conf
+[PASS] Found: etc/mkinitcpio.conf
+[PASS] Found: etc/pacman.conf
+
+============================================================
+8. OS IDENTIFICATION
+============================================================
+NAME="Akspa Linux"
+PRETTY_NAME="Akspa Linux"
+ID=akspa
+BUILD_ID=rolling
+ANSI_COLOR="38;2;23;147;209"
+HOME_URL="https://archlinux.org/"
+DOCUMENTATION_URL="https://wiki.archlinux.org/"
+SUPPORT_URL="https://bbs.archlinux.org/"
+BUG_REPORT_URL="https://gitlab.archlinux.org/groups/archlinux/-/issues"
+PRIVACY_POLICY_URL="https://terms.archlinux.org/docs/privacy-policy/"
+LOGO=akspalinux-logo
+[PASS] os-release has NAME
+[PASS] os-release has ID
+
+============================================================
+9. PACKAGE LIST
+============================================================
+[INFO] Package entries: 329
+[PASS] Package list is not empty
+[WARN] Package list does not explicitly contain: plasma
+[PASS] Package list contains: plasma-desktop
+[WARN] Package list does not explicitly contain: systemd
+[PASS] Package list contains: linux
+[PASS] Package list contains: linux-firmware
+[PASS] Package list contains: mkinitcpio
+[PASS] Package list contains: sudo
+[PASS] Package list contains: networkmanager
+[PASS] Package list contains: sddm
+
+============================================================
+10. KDE PLASMA CONFIGURATION
+============================================================
+[PASS] KDE user config found: etc/skel/.config/kdeglobals
+[PASS] KDE user config found: etc/skel/.config/plasmarc
+[PASS] KDE user config found: etc/skel/.config/plasma-org.kde.plasma.desktop-appletsrc
+[PASS] KDE user config found: etc/skel/.config/kglobalshortcutsrc
+[PASS] KDE user config found: etc/skel/.config/kwinrc
+[PASS] KDE user config found: etc/skel/.config/kcminputrc
+[PASS] KDE user config found: etc/skel/.config/dolphinrc
+[PASS] KDE user config found: etc/skel/.config/kscreenlockerrc
+[PASS] KDE configuration files found under /etc/skel: 8
+
+============================================================
+11. NEW USER CONFIGURATION (/etc/skel)
+============================================================
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/breezerc
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/dolphinrc
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/hypr
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/hypr/hyprland.conf
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kcminputrc
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kdeglobals
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kglobalshortcutsrc
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kscreenlockerrc
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kwinrc
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/plasma-org.kde.plasma.desktop-appletsrc
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/plasmarc
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/effects
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/effects/kwin4_effect_geometry_change
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/scripts
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/scripts/klear
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/scripts/kwin4_effect_geometry_change
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.zshrc
+[PASS] /etc/skel/.config exists
+[PASS] /etc/skel/.local exists
+
+============================================================
+12. KDE NEW-USER PROPAGATION TEST
+============================================================
+[PASS] New-user simulation receives: .config/kdeglobals
+[PASS] New-user simulation receives: .config/plasmarc
+[PASS] New-user simulation receives: .config/kwinrc
+[PASS] New-user simulation receives: .config/kglobalshortcutsrc
+[PASS] New-user simulation receives: .config/kcminputrc
+[PASS] New-user simulation receives: .config/plasma-org.kde.plasma.desktop-appletsrc
+[PASS] KDE configuration propagation through /etc/skel works
+
+============================================================
+13. GLOBAL KDE CONFIGURATION
+============================================================
+
+============================================================
+14. KDE ENVIRONMENT VARIABLES
+============================================================
+
+============================================================
+15. SDDM / DISPLAY MANAGER
+============================================================
+[PASS] sddm.conf.d exists
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/sddm.conf.d/autologin.conf
+[WARN] No /usr/share/sddm in airootfs
+
+============================================================
+16. SYSTEMD SERVICES
+============================================================
+[PASS] systemd directory exists: etc/systemd/system
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/choose-mirror.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/livecd-alsa-unmuter.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/livecd-talk.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/pacman-init.service
+[PASS] Looks like valid service unit: livecd-talk.service
+[PASS] Looks like valid service unit: pacman-init.service
+[PASS] Looks like valid service unit: livecd-alsa-unmuter.service
+[PASS] Looks like valid service unit: choose-mirror.service
+
+============================================================
+17. ENABLED SYSTEMD SERVICES
+============================================================
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/choose-mirror.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/hv_fcopy_daemon.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/hv_kvp_daemon.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/hv_vss_daemon.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/iwd.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/livecd-talk.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/ModemManager.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/pacman-init.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/seatd.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/sshd.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/systemd-networkd.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/systemd-resolved.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/vboxservice.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/vmtoolsd.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/vmware-vmblock-fuse.service
+[PASS] Valid systemd symlink: etc/systemd/system/dbus-org.freedesktop.network1.service
+[FAIL] Broken systemd symlink: etc/systemd/system/multi-user.target.wants/hv_fcopy_daemon.service
+[PASS] Valid systemd symlink: etc/systemd/system/multi-user.target.wants/systemd-resolved.service
+[FAIL] Broken systemd symlink: etc/systemd/system/multi-user.target.wants/livecd-talk.service
+[FAIL] Broken systemd symlink: etc/systemd/system/multi-user.target.wants/vboxservice.service
+[FAIL] Broken systemd symlink: etc/systemd/system/multi-user.target.wants/iwd.service
+[FAIL] Broken systemd symlink: etc/systemd/system/multi-user.target.wants/vmware-vmblock-fuse.service
+[PASS] Valid systemd symlink: etc/systemd/system/multi-user.target.wants/pacman-init.service
+[PASS] Valid systemd symlink: etc/systemd/system/multi-user.target.wants/ModemManager.service
+[FAIL] Broken systemd symlink: etc/systemd/system/multi-user.target.wants/vmtoolsd.service
+[FAIL] Broken systemd symlink: etc/systemd/system/multi-user.target.wants/seatd.service
+[PASS] Valid systemd symlink: etc/systemd/system/multi-user.target.wants/systemd-networkd.service
+[FAIL] Broken systemd symlink: etc/systemd/system/multi-user.target.wants/hv_kvp_daemon.service
+[PASS] Valid systemd symlink: etc/systemd/system/multi-user.target.wants/choose-mirror.service
+[FAIL] Broken systemd symlink: etc/systemd/system/multi-user.target.wants/sshd.service
+[FAIL] Broken systemd symlink: etc/systemd/system/multi-user.target.wants/hv_vss_daemon.service
+[PASS] Valid systemd symlink: etc/systemd/system/display-manager.service
+[PASS] Valid systemd symlink: etc/systemd/system/default.target
+[PASS] Valid systemd symlink: etc/systemd/system/network-online.target.wants/systemd-networkd-wait-online.service
+[PASS] Valid systemd symlink: etc/systemd/system/dbus-org.freedesktop.timesync1.service
+[FAIL] Broken systemd symlink: etc/systemd/system/cloud-init.target.wants/cloud-init-network.service
+[FAIL] Broken systemd symlink: etc/systemd/system/cloud-init.target.wants/cloud-init-local.service
+[FAIL] Broken systemd symlink: etc/systemd/system/cloud-init.target.wants/cloud-init-main.service
+[FAIL] Broken systemd symlink: etc/systemd/system/cloud-init.target.wants/cloud-config.service
+[FAIL] Broken systemd symlink: etc/systemd/system/cloud-init.target.wants/cloud-final.service
+[PASS] Valid systemd symlink: etc/systemd/system/dbus-org.freedesktop.ModemManager1.service
+[PASS] Valid systemd symlink: etc/systemd/system/sockets.target.wants/pcscd.socket
+[PASS] Valid systemd symlink: etc/systemd/system/sockets.target.wants/systemd-networkd.socket
+[PASS] Valid systemd symlink: etc/systemd/system/sysinit.target.wants/systemd-time-wait-sync.service
+[PASS] Valid systemd symlink: etc/systemd/system/sysinit.target.wants/systemd-timesyncd.service
+[PASS] Valid systemd symlink: etc/systemd/system/dbus-org.freedesktop.resolve1.service
+[PASS] Valid systemd symlink: etc/systemd/system/sound.target.wants/livecd-alsa-unmuter.service
+
+============================================================
+18. BROKEN SYMLINK SCAN
+============================================================
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/resolv.conf
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/hv_fcopy_daemon.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/livecd-talk.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/vboxservice.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/iwd.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/vmware-vmblock-fuse.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/vmtoolsd.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/seatd.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/hv_kvp_daemon.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/sshd.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/hv_vss_daemon.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/cloud-init.target.wants/cloud-init-network.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/cloud-init.target.wants/cloud-init-local.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/cloud-init.target.wants/cloud-init-main.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/cloud-init.target.wants/cloud-config.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/cloud-init.target.wants/cloud-final.service
+[FAIL] Found 16 broken symlinks
+
+============================================================
+19. EXECUTABLE / PERMISSION AUDIT
+============================================================
+[WARN] Non-executable script-like file: etc/calamares/ab-snapshot.sh
+[WARN] Non-executable script-like file: etc/calamares/ab-mark-good.sh
+[WARN] Non-executable script-like file: etc/calamares/akspa-install.sh
+[PASS] Executable script: etc/skel/.local/share/kwin/scripts/klear/build-applist.sh
+[PASS] Executable script: usr/share/plasma/plasmoids/luisbocanegra.panel.colorizer/contents/ui/tools/gdbus_get_signal.sh
+[PASS] Executable script: usr/share/plasma/plasmoids/luisbocanegra.panel.colorizer/contents/ui/tools/list_presets.sh
+[PASS] Executable script: root/.automated_script.sh
+[PASS] Executable script: root/customize_airootfs.sh
+[INFO] Script-like files scanned: 8
+
+============================================================
+20. SHELL SCRIPT SYNTAX
+============================================================
+[PASS] Shell syntax OK: etc/calamares/ab-snapshot.sh
+[PASS] Shell syntax OK: etc/calamares/ab-mark-good.sh
+[PASS] Shell syntax OK: etc/calamares/akspa-install.sh
+[PASS] Shell syntax OK: etc/skel/.local/share/kwin/scripts/klear/build-applist.sh
+[PASS] Shell syntax OK: usr/share/plasma/plasmoids/luisbocanegra.panel.colorizer/contents/ui/tools/gdbus_get_signal.sh
+[PASS] Shell syntax OK: usr/share/plasma/plasmoids/luisbocanegra.panel.colorizer/contents/ui/tools/list_presets.sh
+[PASS] Shell syntax OK: root/.automated_script.sh
+[PASS] Shell syntax OK: root/customize_airootfs.sh
+[PASS] No shell syntax errors found
+
+============================================================
+21. SHELLCHECK
+============================================================
+[WARN] ShellCheck unavailable
+
+============================================================
+22. ROOT VS USER KDE CONFIG AUDIT
+============================================================
+[INFO] Skel KDE config exists
+
+============================================================
+23. USER ACCOUNT CONFIGURATION
+============================================================
+liveuser:1000:/home/liveuser:/usr/bin/zsh
+[INFO] Pre-created regular users: 1
+
+============================================================
+24. SUDO CONFIGURATION
+============================================================
+[WARN] /etc/sudoers missing
+
+============================================================
+25. NETWORK CONFIGURATION
+============================================================
+[WARN] NetworkManager configuration directory missing
+[WARN] NetworkManager enablement not detected
+
+============================================================
+26. BOOTLOADER / BOOT CONFIGURATION
+============================================================
+[PASS] Boot configuration found: efiboot
+/home/kskroyal/AKSPAlinux/releng/efiboot/loader/entries/01-archiso-linux.conf
+/home/kskroyal/AKSPAlinux/releng/efiboot/loader/entries/02-archiso-speech-linux.conf
+/home/kskroyal/AKSPAlinux/releng/efiboot/loader/entries/03-archiso-memtest86+x64.conf
+/home/kskroyal/AKSPAlinux/releng/efiboot/loader/entries/archiso-x86_64-linux.conf
+/home/kskroyal/AKSPAlinux/releng/efiboot/loader/loader.conf
+[PASS] Boot configuration found: syslinux
+/home/kskroyal/AKSPAlinux/releng/syslinux/archiso_head.cfg
+/home/kskroyal/AKSPAlinux/releng/syslinux/archiso_pxe.cfg
+/home/kskroyal/AKSPAlinux/releng/syslinux/archiso_pxe-linux.cfg
+/home/kskroyal/AKSPAlinux/releng/syslinux/archiso_sys.cfg
+/home/kskroyal/AKSPAlinux/releng/syslinux/archiso_sys-linux.cfg
+/home/kskroyal/AKSPAlinux/releng/syslinux/archiso_tail.cfg
+/home/kskroyal/AKSPAlinux/releng/syslinux/splash.png
+/home/kskroyal/AKSPAlinux/releng/syslinux/syslinux.cfg
+[PASS] Boot configuration found: grub
+/home/kskroyal/AKSPAlinux/releng/grub/grub.cfg
+/home/kskroyal/AKSPAlinux/releng/grub/loopback.cfg
+
+============================================================
+27. PROFILEDEF SYNTAX
+============================================================
+[PASS] profiledef.sh syntax OK
+
+============================================================
+28. PROFILEDEF CONTENT
+============================================================
+9:install_dir="akspa"
+10:buildmodes=('iso')
+11:bootmodes=('bios.syslinux'
+13:pacman_conf="pacman.conf"
+14:airootfs_image_type="squashfs"
+15:airootfs_image_tool_options=('-comp' 'xz' '-Xbcj' 'x86' '-b' '1M' '-Xdict-size' '1M')
+17:file_permissions=(
+
+============================================================
+29. BUILD SCRIPT DETECTION
+============================================================
+[PASS] Executable build script: releng/profiledef.sh
+[PASS] Syntax OK: releng/profiledef.sh
+[PASS] Executable build script: releng/customize_airootfs.sh
+[PASS] Syntax OK: releng/customize_airootfs.sh
+[PASS] Executable build script: releng/airootfs/root/.automated_script.sh
+[PASS] Syntax OK: releng/airootfs/root/.automated_script.sh
+[PASS] Executable build script: releng/airootfs/root/customize_airootfs.sh
+[PASS] Syntax OK: releng/airootfs/root/customize_airootfs.sh
+[PASS] Executable build script: akspa-full-audit.sh
+[PASS] Syntax OK: akspa-full-audit.sh
+
+============================================================
+30. BUILD SCRIPT COMMAND AUDIT
+============================================================
+5:systemctl enable sddm
+39:systemctl enable seatd.service
+42:systemctl enable NetworkManager.service
+45:systemctl enable sshd.service
+50:# systemctl enable calamares.service || true
+55:rm -rf /var/cache/pacman/pkg/*
+515:    rm -rf "$TMP_HOME"
+1103:            'rm[[:space:]]+-rf|mkfs|dd[[:space:]]+if=|wipefs|sgdisk|fdisk|parted|mount|umount|pacman[[:space:]]+-R|systemctl[[:space:]]+enable' \
+1337:    rm -rf "$SIM_HOME"
+
+============================================================
+31. CALAMARES / INSTALLER
+============================================================
+[PASS] Calamares path exists: etc/calamares
+[PASS] Calamares path exists: usr/lib/calamares
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/95-ab-snapshot.hook
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/ab-boot-success.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/ab-mark-good.sh
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/ab-snapshot.sh
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/akspa-install.sh
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/branding/akspa/akspa-logo.png
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/branding/akspa/branding.desc
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/branding/akspa/p0uya3767.png
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/branding/akspa/slideshow/welcome.qml
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/branding/akspa/welcome.png
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/modules/unpackfs.conf
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/settings.conf
+[PASS] Calamares settings.conf exists
+
+============================================================
+32. INSTALLER USER CREATION
+============================================================
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/settings.conf:22:      - users
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/settings.conf:31:      - users
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/settings.conf:32:      - akspa-user-config
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/ab-snapshot.sh:18:    --exclude={"/proc/*","/sys/*","/dev/*","/tmp/*","/run/*","/mnt/*","/home/*","/var/log/*"} \
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/akspa-install.sh:22:mkdir -p /mnt/boot /mnt/home
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/akspa-install.sh:24:mount "${TARGET_DISK}4" /mnt/home
+[PASS] Calamares user-related configuration detected
+
+============================================================
+33. INSTALLER -> NEW USER -> KDE CHAIN
+============================================================
+[PASS] Stage 1: /etc/skel exists
+[PASS] Stage 2: /etc/skel/.config exists
+[PASS] Stage 3: KDE configuration exists for new users
+[PASS] KDE new-user configuration chain looks valid
+
+============================================================
+34. OWNERSHIP AUDIT
+============================================================
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/modprobe.d/broadcom-wl.conf
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/sddm.conf.d/autologin.conf
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/shadow
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/hostname
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/os-release
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/ssh/sshd_config.d/10-archiso.conf
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/mkinitcpio.d/linux.preset
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/pacman.d/mirrorlist
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/pacman.d/hooks/uncomment-mirrors.hook
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/pacman.d/hooks/zzzz99-remove-custom-hooks-from-airootfs.hook
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/passwd
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/locale.conf
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/mkinitcpio.conf
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/pacman.conf
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/mkinitcpio.conf.d/archiso.conf
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/settings.conf
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/ab-snapshot.sh
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/ab-mark-good.sh
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/modules/unpackfs.conf
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/branding/akspa/slideshow/welcome.qml
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/branding/akspa/akspa-logo.png
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/branding/akspa/welcome.png
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/branding/akspa/branding.desc
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/branding/akspa/p0uya3767.png
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/ab-boot-success.service
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/akspa-install.sh
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/95-ab-snapshot.hook
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/group
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/systemd-networkd-wait-online.service.d/wait-for-only-one-interface.conf
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/livecd-talk.service
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/sddm.service.d/override.conf
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/pacman-init.service
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/getty@tty1.service.d/autologin.conf
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/livecd-alsa-unmuter.service
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/choose-mirror.service
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/display-manager.service~7d09164c99d56365fdf92d7df8450287c2ffb4a5
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/etc-pacman.d-gnupg.mount
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/networkd.conf.d/ipv6-privacy-extensions.conf
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/network/20-ethernet.network
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/network/20-wlan.network
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/network/20-wwan.network
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/resolved.conf.d/archiso.conf
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/journald.conf.d/volatile-storage.conf
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/logind.conf.d/do-not-suspend.conf
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/effects/kwin4_effect_geometry_change/metadata.json
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/effects/kwin4_effect_geometry_change/contents/ui/config.ui
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/effects/kwin4_effect_geometry_change/contents/config/main.xml
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/effects/kwin4_effect_geometry_change/contents/code/main.js
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/scripts/klear/metadata.json
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/scripts/klear/autostart/klear-applist.desktop
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/scripts/klear/LICENSE
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/scripts/klear/klear-applist.service
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/scripts/klear/contents/ui/main.qml
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/scripts/klear/contents/ui/config.ui
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/scripts/klear/contents/ui/klear.png
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/scripts/klear/contents/config/main.xml
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/scripts/klear/contents/code/main.js
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/scripts/klear/contents/code/logic.js
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/scripts/klear/klear-applist.path
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/scripts/klear/icon.png
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/scripts/klear/build-applist.sh
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/scripts/kwin4_effect_geometry_change/metadata.json
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/scripts/kwin4_effect_geometry_change/contents/ui/config.ui
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/scripts/kwin4_effect_geometry_change/contents/config/main.xml
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/scripts/kwin4_effect_geometry_change/contents/code/main.js
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kwinrc
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/dolphinrc
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kscreenlockerrc
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kglobalshortcutsrc
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/breezerc
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/hypr/hyprland.conf
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kdeglobals
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/plasma-org.kde.plasma.desktop-appletsrc
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kcminputrc
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/plasmarc
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.zshrc
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/motd
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/profile
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/local/bin/choose-mirror
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/local/bin/Installation_guide
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/local/bin/livecd-sound
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/local/share/livecd-sound/asound.conf.in
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-lyx.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-pgp-encrypted.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-po.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/audio-x-vorbis+ogg.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-sqlite3.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-msonenote.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-log.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-rust.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-audacity-project.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-chdr.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/libreoffice-text.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/x-office-address-book.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-php.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-cmakecache.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-firmware.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-openvpn-profile.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-arduino.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-vnd.kde.kcrash-report.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/inode-directory.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-pkgbuild.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-dockerfile.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-makefile.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-ruby.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/viewbib.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-awk.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-json.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-xmcd.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-calendar.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/javascript.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/image-x-adobe-dng.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/message-x-gnu-rmail.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-R.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-kmymoney.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-rdata.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-designer.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-bitwig-project-folder.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-opml+xml.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-csharp.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-go.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-gamecube-rom.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/none.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/binary.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-dxf.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/image-aseprite.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-rdata.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/gnome-mime-text-css.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-gzpostscript.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-python3.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-bittorrent.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/audio-prs.sid.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-xpinstall.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-x509-ca-cert.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-pdf.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-vnd.comicbook+zip.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-webarchive.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-java.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/inode-symlink.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-octet-stream.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-kexiproject-sqlite3.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/fonts-package.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-bak.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-perl.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-deb.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-atari-lynx-rom.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-sharedlib.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-vnd.oasis.opendocument.presentation.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-nintendo-ds-rom.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-atari-2600-rom.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-haskell.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-apkg.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/org.rncbc.qpwgraph.application-x-qpwgraph-patchbay.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-codelite-project.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-readme.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-vnd.ms-infopath.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/image-svg+xml.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-labplot2.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-blender.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-vnd.scribus.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/authors.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-scala.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/x-media-podcast.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-pascal.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-objcsrc.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-kotlin.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/viewps.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-ms-shortcut.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-c++hdr.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-sgml.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-pkcs10.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-markdown.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-lua.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/audio-x-mpegurl.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-theme.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-executable-script.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-vnd.afdesigner.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-vnd.appimage.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-mobipocket-ebook.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/video-x-generic.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-copying.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-quattropro.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-marble.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-godot-scene.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-vnd.oasis.opendocument.drawing.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-plasma.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-xmind.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-mac-binhex40.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-octave.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-vnd.recordare.musicxml+xml.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-sass.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-shockwave-flash.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-install.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-vnd.trolltech.linguist.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-vnd.nintendo.snes.rom.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-pgp.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-fusioncomp.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-x-msdownload.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/application-bitwig-preset.svg
+kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/mimetypes/scalable-outlined/text-x-generic-template.svg
+[WARN] 200 system files with non-root ownership detected (first 200 shown)
+
+============================================================
+35. WORLD-WRITABLE SYSTEM FILES
+============================================================
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/vertical-text
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/lr_angle
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/cross_reverse
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/top_right_corner
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/progress
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/draft_small
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/bottom_tee
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/nw-resize
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/9116a3ea924ed2162ecab71ba103b17f
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/dot_box_mask
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/zoom-out
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/fd_double_arrow
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/a2a266d0498c3104214a47bd64ab0fc8
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/move
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/grabbing
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/top_side
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/up-arrow
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/ul_angle
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/n-resize
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/cross
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/size_all
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/dnd-no-drop
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/pointer
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/043a9f68147c53184671403ffa811cc5
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/hand2
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/08e8e1c95fe2fc01f976f1e063a24ccd
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/sb_right_arrow
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/right_tee
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/1081e37283d90000800003c07f3ef6bf
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/wait
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/cell
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/ll_angle
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/draped_box
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/pirate
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/9081237383d90e509aa00f00170e968f
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/dnd-link
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/208530c400c041818281048008011002
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/icon
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/left_ptr
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/fcf1c3c7cd4491d801f1e1c78f100000
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/size_fdiag
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/s-resize
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/bd_double_arrow
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/zoom-in
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/closedhand
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/5c6cd98b3f3ebcb1f9c7f1c204630408
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/bottom_left_corner
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/sb_h_double_arrow
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/size_hor
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/3ecb610c1bf2410f44200f48c40d3599
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/alias
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/default
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/plus
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/v_double_arrow
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/help
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/copy
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/crossed_circle
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/arrow
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/hand
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/target
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/38c5dff7c7b8962045400281044508d2
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/question_arrow
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/draft_large
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/5aca4d189052212118709018842178c0
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/sw-resize
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/tcross
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/top_left_arrow
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/sb_down_arrow
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/640fb0e74195791501fd1ed57b41487f
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/top_left_corner
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/4498f0e0c1937ffe01fd06f973665830
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/nesw-resize
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/down-arrow
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/right_ptr
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/e-resize
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/14fef782d02440884392942c11205230
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/pencil
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/right_side
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/dnd-ask
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/grab
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/link
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/text
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/0426c94ea35c87780ff01dc239897213
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/openhand
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/X_cursor
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/left-arrow
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/dnd-copy
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/size_ver
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/ew-resize
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/whats_this
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/ibeam
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/not-allowed
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/size_bdiag
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/dnd-move
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/left_ptr_watch
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/03b6e0fcb3499374a867c041f52298f0
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/circle
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/028006030e0e7ebffc7f7070c0600140
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/color-picker
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/double_arrow
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/048008013003cff3c00c801001200000
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/e29285e634086352946a0e7090d73106
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/f41c0e382c97c0938e07017e42800402
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/crosshair
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/ne-resize
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/0876e1c15ff2fc01f906f1c363074c0f
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/pointer-move
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/top_tee
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/ur_angle
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/03b6e0fcb3499374a867d041f52298f0
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/f41c0e382c94c0958e07017e42b00462
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/sb_v_double_arrow
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/forbidden
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/draft
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/ns-resize
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/d9ce0ab605698f320427677b458ad60b
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/sb_left_arrow
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/fcf21c00b30f7e3f83fe0dfd12e71cff
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/9d800788f1b08800ae810202380a0822
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/row-resize
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/se-resize
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/hand1
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/split_h
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/2870a09082c103050810ffdffffe0204
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/bottom_side
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/center_ptr
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/xterm
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/pointing_hand
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/half-busy
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/sb_up_arrow
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/3085a0e285430894940527032f8b26df
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/col-resize
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/dnd-none
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/dotbox
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/08ffe1e65f80fcfdf9fff11263e74c48
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/left_side
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/fleur
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/context-menu
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/nwse-resize
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/c7088f0f3e6c8088236ef8e1e3e70000
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/diamond_cross
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/50585d75b494802d0151028115016902
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/c07385c7190e701020ff7ffffd08103c
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/w-resize
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/00008160000006810000408080010102
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/bottom_right_corner
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/h_double_arrow
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/left_ptr_help
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/dot
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/no-drop
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/split_v
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/6407b0e94181790501fd1e167b474872
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/08ffe1cb5fe6fc01f906f1c063814ccf
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/00000000000000020006000e7e9ffc3f
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/left_tee
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/b66166c04f8c3109214a4fbd64a50fc8
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/watch
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/all-scroll
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursors/right-arrow
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/cursor.theme
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/Empty-Pixel-Magenta/index.theme
+[WARN] 161 world-writable system files found
+
+============================================================
+36. HARD-CODED HOME PATH AUDIT
+============================================================
+[PASS] No obvious hard-coded user home paths found
+
+============================================================
+37. BUILD-MACHINE PATH AUDIT
+============================================================
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/ab-snapshot.sh:6:MOUNT_POINT="/mnt/ab-partner"
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/ab-snapshot.sh:18:    --exclude={"/proc/*","/sys/*","/dev/*","/tmp/*","/run/*","/mnt/*","/home/*","/var/log/*"} \
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/akspa-install.sh:22:mkdir -p /mnt/boot /mnt/home
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/akspa-install.sh:23:mount "${TARGET_DISK}1" /mnt/boot
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/akspa-install.sh:24:mount "${TARGET_DISK}4" /mnt/home
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/akspa-install.sh:30:genfstab -U /mnt >> /mnt/etc/fstab
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/akspa-install.sh:33:install -Dm755 "$SRC/ab-snapshot.sh"   /mnt/usr/local/bin/ab-snapshot.sh
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/akspa-install.sh:34:install -Dm755 "$SRC/ab-mark-good.sh"  /mnt/usr/local/bin/ab-mark-good.sh
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/akspa-install.sh:35:install -Dm644 "$SRC/95-ab-snapshot.hook" /mnt/etc/pacman.d/hooks/95-ab-snapshot.hook
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/akspa-install.sh:36:install -Dm644 "$SRC/ab-boot-success.service" /mnt/etc/systemd/system/ab-boot-success.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/akspa-install.sh:38:cat > /mnt/etc/ab-release <<EOF
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/akspa-install.sh:46:mkdir -p /mnt/boot/loader/entries
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/akspa-install.sh:48:cat > /mnt/boot/loader/entries/akspa-current.conf <<EOF
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/akspa-install.sh:55:cat > /mnt/boot/loader/entries/akspa-rollback.conf <<EOF
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/calamares/akspa-install.sh:62:cat > /mnt/boot/loader/loader.conf <<EOF
+[WARN] Possible build-machine path leaks detected
+
+============================================================
+38. KDE CONFIG OWNERSHIP SIMULATION
+============================================================
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230956/simulated-user-home/.config/breezerc
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230956/simulated-user-home/.config/dolphinrc
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230956/simulated-user-home/.config/hypr/hyprland.conf
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230956/simulated-user-home/.config/kcminputrc
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230956/simulated-user-home/.config/kdeglobals
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230956/simulated-user-home/.config/kglobalshortcutsrc
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230956/simulated-user-home/.config/kscreenlockerrc
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230956/simulated-user-home/.config/kwinrc
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230956/simulated-user-home/.config/plasma-org.kde.plasma.desktop-appletsrc
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230956/simulated-user-home/.config/plasmarc
+[PASS] Simulated new user receives KDE configuration
+
+============================================================
+39. USER SYSTEMD CONFIGURATION
+============================================================
+[INFO] No /etc/skel user systemd configuration
+
+============================================================
+40. KDE AUTOSTART
+============================================================
+
+============================================================
+41. INITRAMFS
+============================================================
+
+============================================================
+42. PACMAN CONFIGURATION
+============================================================
+1:[options]
+5:ParallelDownloads = 5
+6:SigLevel = Required DatabaseOptional
+9:[core]
+10:Include = /etc/pacman.d/mirrorlist
+12:[extra]
+13:Include = /etc/pacman.d/mirrorlist
+15:[multilib]
+16:Include = /etc/pacman.d/mirrorlist
+18:[akspa]
+19:SigLevel = Optional TrustAll
+20:Server = https://pouya3767.github.io/AKSPArepo/x86_64
+[PASS] core repository configured
+[PASS] extra repository configured
+
+============================================================
+43. LOCAL PACKAGE FILES
+============================================================
+/home/kskroyal/AKSPAlinux/releng/airootfs/opt/akspa-repo/x86_64/calamares-3.3.14-1-x86_64.pkg.tar.zst
+/home/kskroyal/AKSPAlinux/releng/airootfs/opt/akspa-repo/x86_64/calamares-debug-3.3.14-1-x86_64.pkg.tar.zst
+[INFO] Local package files: 2
+
+============================================================
+44. EXTERNAL / AUR PACKAGE REFERENCES
+============================================================
+25:calamares
+163:nvidia-dkms
+[WARN] Potential external/AUR packages detected in package list
+
+============================================================
+45. GENERATED ISO DETECTION
+============================================================
+[WARN] No generated ISO found
+
+============================================================
+46. ISO BOOT MARKERS
+============================================================
+
+============================================================
+47. ISO CONTENT LIST
+============================================================
+
+============================================================
+48. CONFIG REFERENCE AUDIT
+============================================================
+[INFO] Collected referenced absolute paths for manual review
+[WARN] Referenced path not found: /etc/ab-release
+[WARN] Referenced path not found: /etc/asound.conf
+[WARN] Referenced path not found: /etc/fstab
+[WARN] Referenced path not found: /etc/pacman.d/gnupg
+[WARN] Referenced path not found: /etc/pacman.d/hooks/95-ab-snapshot.hook
+[WARN] Referenced path not found: /etc/pacman.d/mirrorlist...
+[WARN] Referenced path not found: /etc/pacman.d/mirrorlist.orig
+[WARN] Referenced path not found: /etc/systemd/system/ab-boot-success.service
+[WARN] Referenced path not found: /etc/xdg/reflector/reflector.conf
+[WARN] Referenced path not found: /usr/bin/chvt
+[WARN] Referenced path not found: /usr/bin/env
+[WARN] Referenced path not found: /usr/bin/ModemManager
+[WARN] Referenced path not found: /usr/bin/pacman-key
+[WARN] Referenced path not found: /usr/bin/sddm
+[WARN] Referenced path not found: /usr/bin/sed
+[WARN] Referenced path not found: /usr/bin/sleep
+[WARN] Referenced path not found: /usr/bin/zsh
+[WARN] Referenced path not found: /usr/lib/modprobe.d/
+[WARN] Referenced path not found: /usr/lib/systemd/systemd-networkd
+[WARN] Referenced path not found: /usr/lib/systemd/systemd-networkd-wait-online
+[WARN] Referenced path not found: /usr/lib/systemd/systemd-resolved
+[WARN] Referenced path not found: /usr/lib/systemd/systemd-timesyncd
+[WARN] Referenced path not found: /usr/lib/systemd/systemd-time-wait-sync
+[WARN] Referenced path not found: /usr/local/bin/ab-mark-good.sh
+[WARN] Referenced path not found: /usr/local/bin/ab-snapshot.sh
+[WARN] Referenced path not found: /usr/local/bin/livecdsound
+[WARN] Referenced path not found: /usr/local/share/akspa-installer
+[WARN] Referenced path not found: /usr/local/share/applications
+[WARN] Referenced path not found: /usr/share/livecd-sounds/beep.wav
+[WARN] Referenced path not found: /usr/share/livecd-sounds/pick-a-card.wav
+[WARN] Referenced path not found: /usr/share/wallpapers/AKSPA/ChatGPT
+
+============================================================
+49. PACKAGE DUPLICATES
+============================================================
+[PASS] No duplicate package entries
+
+============================================================
+50. PACKAGE NAME SANITY
+============================================================
+1:
+[INFO] Review suspicious package-list lines
+
+============================================================
+51. PLASMA SESSION FILES
+============================================================
+[WARN] No Plasma session desktop file detected
+
+============================================================
+52. PLASMA X11 / WAYLAND SUPPORT
+============================================================
+
+============================================================
+53. GRAPHICS STACK
+============================================================
+[PASS] Graphics/session package listed: mesa
+[INFO] Graphics/session package not explicitly listed: lib32-mesa
+[INFO] Graphics/session package not explicitly listed: vulkan-icd-loader
+[PASS] Graphics/session package listed: xorg-server
+[PASS] Graphics/session package listed: wayland
+[PASS] Graphics/session package listed: kwin
+[PASS] Graphics/session package listed: plasma-workspace
+
+============================================================
+54. FIRMWARE
+============================================================
+[PASS] linux-firmware listed
+
+============================================================
+55. LOCALE CONFIGURATION
+============================================================
+[WARN] locale.gen missing
+[PASS] locale.conf exists
+LANG=C.UTF-8
+
+============================================================
+56. TIMEZONE
+============================================================
+[PASS] Timezone symlink exists: /usr/share/zoneinfo/UTC
+
+============================================================
+57. HOSTNAME
+============================================================
+[INFO] Default hostname: archiso
+
+============================================================
+58. FSTAB
+============================================================
+
+============================================================
+59. BUILD ENVIRONMENT REFERENCES
+============================================================
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/sddm.conf.d/autologin.conf:2:User=liveuser
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/dbus-org.freedesktop.network1.service:36:ProtectHome=yes
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/dbus-org.freedesktop.network1.service:54:User=systemd-network
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/systemd-resolved.service:35:ProtectHome=yes
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/systemd-resolved.service:53:User=systemd-resolve
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/ModemManager.service:15:ProtectHome=true
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/ModemManager.service:19:User=root
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/systemd-networkd.service:36:ProtectHome=yes
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/systemd-networkd.service:54:User=systemd-network
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/livecd-talk.service:9:TTYPath=/dev/tty13
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/dbus-org.freedesktop.timesync1.service:37:ProtectHome=yes
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/dbus-org.freedesktop.timesync1.service:55:User=systemd-timesync
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/dbus-org.freedesktop.ModemManager1.service:15:ProtectHome=true
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/dbus-org.freedesktop.ModemManager1.service:19:User=root
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/sockets.target.wants/pcscd.socket:7:SocketUser=pcscd
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/sysinit.target.wants/systemd-timesyncd.service:37:ProtectHome=yes
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/sysinit.target.wants/systemd-timesyncd.service:55:User=systemd-timesync
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/dbus-org.freedesktop.resolve1.service:35:ProtectHome=yes
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/dbus-org.freedesktop.resolve1.service:53:User=systemd-resolve
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kdeglobals:156:Show Full Path=false
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/preferences/scalable/preferences-vpn.svg:15:  <g clip-path="url(#clip0_2648_607)" id="g3" transform="matrix(0.66161072,0,0,0.66161072,3.1749375,3.507066)" style="fill:currentColor;fill-opacity:1" class="ColorScheme-Text">
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/apps/scalable/kcolorchooser.svg:15:    <path style="fill:currentColor;fill-opacity:1;stroke:none;stroke-width:2.07416;stroke-dasharray:none;stroke-opacity:0.3" d="m 24.106188,27.1348 -10.294281,9.96979 c -1.592284,1.542093 -2.06215,4.068708 -1.531814,6.05941 l -6.523455,6.623796 c -2.342115,2.342264 -2.3422644,6.113354 3.38e-5,8.455618 2.3421148,2.342114 6.1133552,2.342114 8.4556192,0 l 6.923805,-7.323508 c 1.990852,0.530484 4.19201,0.03586 5.7594,-1.531812 l 9.819145,-9.884944 z" id="path6-4" sodipodi:nodetypes="cscccccccc" clip-path="url(#clipath_lpe_path-effect1303-2)" inkscape:path-effect="#path-effect1303-2" inkscape:original-d="m 24.106188,27.1348 -10.294281,9.96979 c -1.592284,1.542093 -2.06215,4.068708 -1.531814,6.05941 l -6.523455,6.623796 c -2.342115,2.342264 -2.3422644,6.113354 3.38e-5,8.455618 2.3421148,2.342114 6.1133552,2.342114 8.4556192,0 l 6.923805,-7.323508 c 1.990852,0.530484 4.19201,0.03586 5.7594,-1.531812 l 9.819145,-9.884944 z" class="ColorScheme-Text"/>
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/apps/scalable/gnome-color-manager.svg:15:    <path style="fill:currentColor;fill-opacity:1;stroke:none;stroke-width:2.07416;stroke-dasharray:none;stroke-opacity:0.3" d="m 24.106188,27.1348 -10.294281,9.96979 c -1.592284,1.542093 -2.06215,4.068708 -1.531814,6.05941 l -6.523455,6.623796 c -2.342115,2.342264 -2.3422644,6.113354 3.38e-5,8.455618 2.3421148,2.342114 6.1133552,2.342114 8.4556192,0 l 6.923805,-7.323508 c 1.990852,0.530484 4.19201,0.03586 5.7594,-1.531812 l 9.819145,-9.884944 z" id="path6-4" sodipodi:nodetypes="cscccccccc" clip-path="url(#clipath_lpe_path-effect1303-2)" inkscape:path-effect="#path-effect1303-2" inkscape:original-d="m 24.106188,27.1348 -10.294281,9.96979 c -1.592284,1.542093 -2.06215,4.068708 -1.531814,6.05941 l -6.523455,6.623796 c -2.342115,2.342264 -2.3422644,6.113354 3.38e-5,8.455618 2.3421148,2.342114 6.1133552,2.342114 8.4556192,0 l 6.923805,-7.323508 c 1.990852,0.530484 4.19201,0.03586 5.7594,-1.531812 l 9.819145,-9.884944 z" class="ColorScheme-Text"/>
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/apps/scalable/org.xfce.settings.color.svg:15:    <path style="fill:currentColor;fill-opacity:1;stroke:none;stroke-width:2.07416;stroke-dasharray:none;stroke-opacity:0.3" d="m 24.106188,27.1348 -10.294281,9.96979 c -1.592284,1.542093 -2.06215,4.068708 -1.531814,6.05941 l -6.523455,6.623796 c -2.342115,2.342264 -2.3422644,6.113354 3.38e-5,8.455618 2.3421148,2.342114 6.1133552,2.342114 8.4556192,0 l 6.923805,-7.323508 c 1.990852,0.530484 4.19201,0.03586 5.7594,-1.531812 l 9.819145,-9.884944 z" id="path6-4" sodipodi:nodetypes="cscccccccc" clip-path="url(#clipath_lpe_path-effect1303-2)" inkscape:path-effect="#path-effect1303-2" inkscape:original-d="m 24.106188,27.1348 -10.294281,9.96979 c -1.592284,1.542093 -2.06215,4.068708 -1.531814,6.05941 l -6.523455,6.623796 c -2.342115,2.342264 -2.3422644,6.113354 3.38e-5,8.455618 2.3421148,2.342114 6.1133552,2.342114 8.4556192,0 l 6.923805,-7.323508 c 1.990852,0.530484 4.19201,0.03586 5.7594,-1.531812 l 9.819145,-9.884944 z" class="ColorScheme-Text"/>
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/apps/scalable/nl.hjdskes.gcolor3.svg:15:    <path style="fill:currentColor;fill-opacity:1;stroke:none;stroke-width:2.07416;stroke-dasharray:none;stroke-opacity:0.3" d="m 24.106188,27.1348 -10.294281,9.96979 c -1.592284,1.542093 -2.06215,4.068708 -1.531814,6.05941 l -6.523455,6.623796 c -2.342115,2.342264 -2.3422644,6.113354 3.38e-5,8.455618 2.3421148,2.342114 6.1133552,2.342114 8.4556192,0 l 6.923805,-7.323508 c 1.990852,0.530484 4.19201,0.03586 5.7594,-1.531812 l 9.819145,-9.884944 z" id="path6-4" sodipodi:nodetypes="cscccccccc" clip-path="url(#clipath_lpe_path-effect1303-2)" inkscape:path-effect="#path-effect1303-2" inkscape:original-d="m 24.106188,27.1348 -10.294281,9.96979 c -1.592284,1.542093 -2.06215,4.068708 -1.531814,6.05941 l -6.523455,6.623796 c -2.342115,2.342264 -2.3422644,6.113354 3.38e-5,8.455618 2.3421148,2.342114 6.1133552,2.342114 8.4556192,0 l 6.923805,-7.323508 c 1.990852,0.530484 4.19201,0.03586 5.7594,-1.531812 l 9.819145,-9.884944 z" class="ColorScheme-Text"/>
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/apps/scalable/com.github.finefindus.eyedropper.svg:15:    <path style="fill:currentColor;fill-opacity:1;stroke:none;stroke-width:2.07416;stroke-dasharray:none;stroke-opacity:0.3" d="m 24.106188,27.1348 -10.294281,9.96979 c -1.592284,1.542093 -2.06215,4.068708 -1.531814,6.05941 l -6.523455,6.623796 c -2.342115,2.342264 -2.3422644,6.113354 3.38e-5,8.455618 2.3421148,2.342114 6.1133552,2.342114 8.4556192,0 l 6.923805,-7.323508 c 1.990852,0.530484 4.19201,0.03586 5.7594,-1.531812 l 9.819145,-9.884944 z" id="path6-4" sodipodi:nodetypes="cscccccccc" clip-path="url(#clipath_lpe_path-effect1303-2)" inkscape:path-effect="#path-effect1303-2" inkscape:original-d="m 24.106188,27.1348 -10.294281,9.96979 c -1.592284,1.542093 -2.06215,4.068708 -1.531814,6.05941 l -6.523455,6.623796 c -2.342115,2.342264 -2.3422644,6.113354 3.38e-5,8.455618 2.3421148,2.342114 6.1133552,2.342114 8.4556192,0 l 6.923805,-7.323508 c 1.990852,0.530484 4.19201,0.03586 5.7594,-1.531812 l 9.819145,-9.884944 z" class="ColorScheme-Text"/>
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/icons/YAMIS/apps/scalable/org.kde.kcolorchooser.svg:15:    <path style="fill:currentColor;fill-opacity:1;stroke:none;stroke-width:2.07416;stroke-dasharray:none;stroke-opacity:0.3" d="m 24.106188,27.1348 -10.294281,9.96979 c -1.592284,1.542093 -2.06215,4.068708 -1.531814,6.05941 l -6.523455,6.623796 c -2.342115,2.342264 -2.3422644,6.113354 3.38e-5,8.455618 2.3421148,2.342114 6.1133552,2.342114 8.4556192,0 l 6.923805,-7.323508 c 1.990852,0.530484 4.19201,0.03586 5.7594,-1.531812 l 9.819145,-9.884944 z" id="path6-4" sodipodi:nodetypes="cscccccccc" clip-path="url(#clipath_lpe_path-effect1303-2)" inkscape:path-effect="#path-effect1303-2" inkscape:original-d="m 24.106188,27.1348 -10.294281,9.96979 c -1.592284,1.542093 -2.06215,4.068708 -1.531814,6.05941 l -6.523455,6.623796 c -2.342115,2.342264 -2.3422644,6.113354 3.38e-5,8.455618 2.3421148,2.342114 6.1133552,2.342114 8.4556192,0 l 6.923805,-7.323508 c 1.990852,0.530484 4.19201,0.03586 5.7594,-1.531812 l 9.819145,-9.884944 z" class="ColorScheme-Text"/>
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/akspa/akspa.zsh:22:alias home='cd ~'
+/home/kskroyal/AKSPAlinux/releng/airootfs/usr/share/plasma/plasmoids/luisbocanegra.panel.colorizer/contents/ui/tools/gdbus_get_signal.sh:8:DBUS_PATH=${4}
+
+============================================================
+60. GIT STATUS
+============================================================
+ M releng/airootfs/etc/calamares/settings.conf
+ M releng/packages.x86_64
+?? akspa-audit-final.txt
+?? akspa-full-audit.sh
+?? audit-report-20260826-230943/
+?? audit-report-20260826-230956/
+?? releng/airootfs/etc/default/
+?? releng/airootfs/etc/skel/.config/breezerc
+?? releng/airootfs/etc/skel/.config/dolphinrc
+?? releng/airootfs/etc/skel/.config/kcminputrc
+?? releng/airootfs/etc/skel/.config/kdeglobals
+?? releng/airootfs/etc/skel/.config/kglobalshortcutsrc
+?? releng/airootfs/etc/skel/.config/kscreenlockerrc
+?? releng/airootfs/etc/skel/.config/kwinrc
+?? releng/airootfs/etc/skel/.config/plasma-org.kde.plasma.desktop-appletsrc
+?? releng/airootfs/etc/skel/.config/plasmarc
+?? releng/airootfs/etc/skel/.local/
+?? releng/airootfs/etc/skel/.zshrc
+?? releng/airootfs/usr/lib/
+?? releng/airootfs/usr/share/akspa/
+?? releng/airootfs/usr/share/color-schemes/
+?? releng/airootfs/usr/share/icons/
+?? releng/airootfs/usr/share/kwin-wayland/
+?? releng/airootfs/usr/share/kwin-x11/
+?? releng/airootfs/usr/share/plasma/
+?? releng/airootfs/usr/share/wallpapers/
+?? releng/packages.x86_64.backup
+[INFO] Git branch: master
+[INFO] Git commit: ff45d77
+
+============================================================
+61. MKARCHISO PROFILE VALIDATION
+============================================================
+[PASS] mkarchiso is callable
+
+============================================================
+62. PROFILE PARSING
+============================================================
+[PASS] Profile is shell-parseable
+
+============================================================
+63. FILE / DIRECTORY STRUCTURE CONSISTENCY
+============================================================
+[PASS] Filesystem tree has valid parent directories
+
+============================================================
+64. CRLF / WINDOWS LINE ENDINGS
+============================================================
+[PASS] No obvious CRLF configuration files
+
+============================================================
+65. KDE NEW-USER FINAL VERDICT
+============================================================
+[PASS] KDE graphical configuration should propagate to newly created users through /etc/skel
+
+============================================================
+67. FINAL STATIC VERDICT
+============================================================
+
+PASS : 140
+WARN : 53
+FAIL : 16
+INFO : 14
+
+STATIC VERDICT: FAIL
+Blocking problems were detected.
+
+KDE NEW USER CONFIGURATION: LIKELY
+
+Report directory:
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230956
+
+============================================================
+68. REPORT EXPORT
+============================================================
+
+============================================================
+AUDIT COMPLETE
+============================================================
+Full report:
+/home/kskroyal/AKSPAlinux/audit-report-20260826-230956/audit.log
+
+Summary:
+AKSPA Linux ISO Preflight Audit
+================================
+
+Date: Wed Aug 26 11:10:09 PM +0330 2026
+
+Project:
+/home/kskroyal/AKSPAlinux
+
+Profile:
+/home/kskroyal/AKSPAlinux/releng
+
+airootfs:
+/home/kskroyal/AKSPAlinux/releng/airootfs
+
+Packages:
+/home/kskroyal/AKSPAlinux/releng/packages.x86_64
+
+PASS=140
+WARN=53
+FAIL=16
+INFO=14
+
+KDE_NEW_USER=LIKELY
+
+Static verdict:
+FAIL
+
+IMPORTANT:
+This audit verifies static structure and configuration.
+It does NOT replace a real BIOS/UEFI + VM/hardware boot test.

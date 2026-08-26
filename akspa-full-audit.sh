@@ -1,0 +1,2238 @@
+#!/usr/bin/env bash
+set -uo pipefail
+
+###############################################################################
+# AKSPA Linux - Full ISO Preflight Audit
+#
+# Run from the ROOT of the AKSPA Linux ISO project.
+#
+# Goal:
+#   1. Audit the build tree
+#   2. Audit ArchISO structure
+#   3. Audit airootfs
+#   4. Audit systemd
+#   5. Audit KDE Plasma configuration
+#   6. Audit /etc/skel and new-user propagation
+#   7. Audit boot/ISO configuration
+#   8. Audit scripts and permissions
+#   9. Audit generated ISO if available
+#
+# This is a STATIC audit.
+# It cannot replace a real VM/hardware boot test.
+###############################################################################
+
+PROJECT_ROOT="$(pwd)"
+REPORT_DIR="${PROJECT_ROOT}/audit-report-$(date +%Y%m%d-%H%M%S)"
+LOG="${REPORT_DIR}/audit.log"
+
+mkdir -p "$REPORT_DIR"
+
+PASS=0
+WARN=0
+FAIL=0
+INFO=0
+
+###############################################################################
+# Colors
+###############################################################################
+
+if [[ -t 1 ]]; then
+    RED='\033[1;31m'
+    GREEN='\033[1;32m'
+    YELLOW='\033[1;33m'
+    BLUE='\033[1;34m'
+    CYAN='\033[1;36m'
+    MAGENTA='\033[1;35m'
+    RESET='\033[0m'
+else
+    RED=''
+    GREEN=''
+    YELLOW=''
+    BLUE=''
+    CYAN=''
+    MAGENTA=''
+    RESET=''
+fi
+
+###############################################################################
+# Logging
+###############################################################################
+
+log() {
+    printf '%b\n' "$*" | tee -a "$LOG"
+}
+
+section() {
+    log ""
+    log "${CYAN}============================================================${RESET}"
+    log "${CYAN}$*${RESET}"
+    log "${CYAN}============================================================${RESET}"
+}
+
+pass() {
+    PASS=$((PASS + 1))
+    log "${GREEN}[PASS]${RESET} $*"
+}
+
+warn() {
+    WARN=$((WARN + 1))
+    log "${YELLOW}[WARN]${RESET} $*"
+}
+
+fail() {
+    FAIL=$((FAIL + 1))
+    log "${RED}[FAIL]${RESET} $*"
+}
+
+info() {
+    INFO=$((INFO + 1))
+    log "${BLUE}[INFO]${RESET} $*"
+}
+
+###############################################################################
+# Helpers
+###############################################################################
+
+have() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+find_first() {
+    local f
+    for f in "$@"; do
+        [[ -e "$f" ]] && {
+            printf '%s\n' "$f"
+            return 0
+        }
+    done
+    return 1
+}
+
+find_dirs_named() {
+    find "$PROJECT_ROOT" \
+        -type d \
+        \( -name .git -o -name node_modules \) -prune -o \
+        -type d -name "$1" -print 2>/dev/null
+}
+
+###############################################################################
+# Start
+###############################################################################
+
+section "AKSPA LINUX ISO - FULL PRE-FLIGHT AUDIT"
+
+log "Project root : $PROJECT_ROOT"
+log "Report       : $REPORT_DIR"
+log "Date         : $(date)"
+log "Kernel       : $(uname -r)"
+log "Host         : $(uname -m)"
+log "User         : $(id -un)"
+
+###############################################################################
+# 1. Required host tools
+###############################################################################
+
+section "1. HOST BUILD TOOLS"
+
+REQUIRED_TOOLS=(
+    mkarchiso
+    pacman
+    awk
+    sed
+    grep
+    find
+    file
+    stat
+    readlink
+    bash
+)
+
+OPTIONAL_TOOLS=(
+    xorriso
+    isoinfo
+    bsdtar
+    unsquashfs
+    cpio
+    shellcheck
+    qemu-system-x86_64
+    efibootmgr
+)
+
+for cmd in "${REQUIRED_TOOLS[@]}"; do
+    if have "$cmd"; then
+        pass "Required tool exists: $cmd"
+    else
+        fail "Required tool missing: $cmd"
+    fi
+done
+
+for cmd in "${OPTIONAL_TOOLS[@]}"; do
+    if have "$cmd"; then
+        pass "Optional audit tool exists: $cmd"
+    else
+        warn "Optional audit tool missing: $cmd"
+    fi
+done
+
+###############################################################################
+# 2. Project tree
+###############################################################################
+
+section "2. PROJECT STRUCTURE"
+
+info "Top-level project files/directories:"
+
+find "$PROJECT_ROOT" \
+    -maxdepth 2 \
+    -mindepth 1 \
+    \( -path '*/.git' -o -path '*/.git/*' \) -prune -o \
+    -print 2>/dev/null \
+    | sort \
+    | tee "$REPORT_DIR/project-tree.txt"
+
+###############################################################################
+# 3. Detect ArchISO profile
+###############################################################################
+
+section "3. ARCHISO PROFILE DETECTION"
+
+PROFILE_DIR=""
+
+CANDIDATE_PROFILES=(
+    "$PROJECT_ROOT"
+    "$PROJECT_ROOT/profile"
+    "$PROJECT_ROOT/iso"
+    "$PROJECT_ROOT/ISO"
+    "$PROJECT_ROOT/archiso"
+    "$PROJECT_ROOT/profiledef"
+    "$PROJECT_ROOT/akspa"
+)
+
+for d in "${CANDIDATE_PROFILES[@]}"; do
+    if [[ -f "$d/profiledef.sh" ]]; then
+        PROFILE_DIR="$d"
+        break
+    fi
+done
+
+if [[ -z "$PROFILE_DIR" ]]; then
+    PROFILE_DIR="$(find "$PROJECT_ROOT" \
+        -type f \
+        -name profiledef.sh \
+        -not -path '*/.git/*' \
+        -print 2>/dev/null \
+        | head -n1 \
+        | xargs -r dirname)"
+fi
+
+if [[ -n "$PROFILE_DIR" && -f "$PROFILE_DIR/profiledef.sh" ]]; then
+    pass "ArchISO profile detected: $PROFILE_DIR"
+else
+    fail "No profiledef.sh found"
+fi
+
+###############################################################################
+# 4. Profile files
+###############################################################################
+
+section "4. ARCHISO PROFILE FILES"
+
+if [[ -n "$PROFILE_DIR" ]]; then
+
+    REQUIRED_PROFILE_FILES=(
+        "profiledef.sh"
+        "packages.x86_64"
+    )
+
+    for f in "${REQUIRED_PROFILE_FILES[@]}"; do
+        if [[ -f "$PROFILE_DIR/$f" ]]; then
+            pass "Profile file exists: $f"
+        else
+            fail "Profile file missing: $f"
+        fi
+    done
+
+    for f in \
+        "$PROFILE_DIR/pacman.conf" \
+        "$PROFILE_DIR/airootfs" \
+        "$PROFILE_DIR/bootstrap_packages.x86_64" \
+        "$PROFILE_DIR/efiboot" \
+        "$PROFILE_DIR/syslinux"; do
+
+        if [[ -e "$f" ]]; then
+            pass "Profile component exists: ${f#$PROFILE_DIR/}"
+        fi
+    done
+fi
+
+###############################################################################
+# 5. airootfs detection
+###############################################################################
+
+section "5. AIROOTFS"
+
+AIROOTFS=""
+
+if [[ -n "$PROFILE_DIR" && -d "$PROFILE_DIR/airootfs" ]]; then
+    AIROOTFS="$PROFILE_DIR/airootfs"
+else
+    AIROOTFS="$(find "$PROJECT_ROOT" \
+        -type d \
+        -name airootfs \
+        -not -path '*/.git/*' \
+        -print 2>/dev/null \
+        | head -n1)"
+fi
+
+if [[ -n "$AIROOTFS" && -d "$AIROOTFS" ]]; then
+    pass "airootfs detected: $AIROOTFS"
+else
+    fail "airootfs directory not found"
+fi
+
+###############################################################################
+# 6. Standard Linux filesystem layout
+###############################################################################
+
+section "6. AIROOTFS STANDARD LAYOUT"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    REQUIRED_DIRS=(
+        etc
+        usr
+        var
+        root
+        home
+        opt
+    )
+
+    for d in "${REQUIRED_DIRS[@]}"; do
+        if [[ -d "$AIROOTFS/$d" ]]; then
+            pass "airootfs/$d exists"
+        else
+            warn "airootfs/$d does not exist"
+        fi
+    done
+fi
+
+###############################################################################
+# 7. Important system files
+###############################################################################
+
+section "7. IMPORTANT SYSTEM FILES"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    IMPORTANT_FILES=(
+        etc/passwd
+        etc/group
+        etc/shadow
+        etc/os-release
+        etc/hostname
+        etc/locale.conf
+        etc/vconsole.conf
+        etc/fstab
+        etc/mkinitcpio.conf
+        etc/pacman.conf
+        etc/sudoers
+        etc/environment
+    )
+
+    for f in "${IMPORTANT_FILES[@]}"; do
+        if [[ -e "$AIROOTFS/$f" ]]; then
+            pass "Found: $f"
+        fi
+    done
+fi
+
+###############################################################################
+# 8. OS release
+###############################################################################
+
+section "8. OS IDENTIFICATION"
+
+if [[ -n "$AIROOTFS" && -f "$AIROOTFS/etc/os-release" ]]; then
+    cat "$AIROOTFS/etc/os-release" \
+        | tee "$REPORT_DIR/os-release.txt"
+
+    if grep -qE '^NAME=' "$AIROOTFS/etc/os-release"; then
+        pass "os-release has NAME"
+    else
+        fail "os-release missing NAME"
+    fi
+
+    if grep -qE '^ID=' "$AIROOTFS/etc/os-release"; then
+        pass "os-release has ID"
+    else
+        fail "os-release missing ID"
+    fi
+else
+    warn "No airootfs/etc/os-release"
+fi
+
+###############################################################################
+# 9. Packages
+###############################################################################
+
+section "9. PACKAGE LIST"
+
+PACKAGE_FILE=""
+
+if [[ -n "$PROFILE_DIR" && -f "$PROFILE_DIR/packages.x86_64" ]]; then
+    PACKAGE_FILE="$PROFILE_DIR/packages.x86_64"
+else
+    PACKAGE_FILE="$(find "$PROJECT_ROOT" \
+        -type f \
+        -name 'packages.x86_64' \
+        -not -path '*/.git/*' \
+        -print 2>/dev/null \
+        | head -n1)"
+fi
+
+if [[ -n "$PACKAGE_FILE" ]]; then
+
+    grep -vE '^[[:space:]]*(#|$)' "$PACKAGE_FILE" \
+        | sort -u \
+        > "$REPORT_DIR/packages-clean.txt"
+
+    PACKAGE_COUNT="$(wc -l < "$REPORT_DIR/packages-clean.txt")"
+
+    info "Package entries: $PACKAGE_COUNT"
+
+    if (( PACKAGE_COUNT > 0 )); then
+        pass "Package list is not empty"
+    else
+        fail "packages.x86_64 is empty"
+    fi
+
+    CORE_PACKAGES=(
+        plasma
+        plasma-desktop
+        systemd
+        linux
+        linux-firmware
+        mkinitcpio
+        sudo
+        networkmanager
+        sddm
+    )
+
+    for pkg in "${CORE_PACKAGES[@]}"; do
+        if grep -qx "$pkg" "$REPORT_DIR/packages-clean.txt"; then
+            pass "Package list contains: $pkg"
+        else
+            warn "Package list does not explicitly contain: $pkg"
+        fi
+    done
+
+else
+    fail "packages.x86_64 not found"
+fi
+
+###############################################################################
+# 10. KDE detection
+###############################################################################
+
+section "10. KDE PLASMA CONFIGURATION"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    KDE_PATHS=(
+        "$AIROOTFS/etc/skel/.config/kdeglobals"
+        "$AIROOTFS/etc/skel/.config/plasmarc"
+        "$AIROOTFS/etc/skel/.config/plasma-org.kde.plasma.desktop-appletsrc"
+        "$AIROOTFS/etc/skel/.config/kglobalshortcutsrc"
+        "$AIROOTFS/etc/skel/.config/kwinrc"
+        "$AIROOTFS/etc/skel/.config/kcminputrc"
+        "$AIROOTFS/etc/skel/.config/konsolerc"
+        "$AIROOTFS/etc/skel/.config/dolphinrc"
+        "$AIROOTFS/etc/skel/.config/kscreenlockerrc"
+        "$AIROOTFS/etc/skel/.config/powermanagementprofilesrc"
+    )
+
+    KDE_FOUND=0
+
+    for f in "${KDE_PATHS[@]}"; do
+        if [[ -f "$f" ]]; then
+            pass "KDE user config found: ${f#$AIROOTFS/}"
+            KDE_FOUND=$((KDE_FOUND + 1))
+        fi
+    done
+
+    if (( KDE_FOUND == 0 )); then
+        warn "No standard KDE user configuration found under /etc/skel"
+    else
+        pass "KDE configuration files found under /etc/skel: $KDE_FOUND"
+    fi
+fi
+
+###############################################################################
+# 11. /etc/skel
+###############################################################################
+
+section "11. NEW USER CONFIGURATION (/etc/skel)"
+
+SKEL=""
+
+if [[ -n "$AIROOTFS" && -d "$AIROOTFS/etc/skel" ]]; then
+    SKEL="$AIROOTFS/etc/skel"
+fi
+
+if [[ -n "$SKEL" ]]; then
+
+    find "$SKEL" -mindepth 1 -maxdepth 5 -print 2>/dev/null \
+        | sort \
+        | tee "$REPORT_DIR/skel-tree.txt"
+
+    if [[ -d "$SKEL/.config" ]]; then
+        pass "/etc/skel/.config exists"
+    else
+        warn "/etc/skel/.config does not exist"
+    fi
+
+    if [[ -d "$SKEL/.local" ]]; then
+        pass "/etc/skel/.local exists"
+    fi
+
+    if [[ -d "$SKEL/Desktop" ]]; then
+        info "/etc/skel/Desktop exists"
+    fi
+
+else
+    fail "/etc/skel missing from airootfs"
+fi
+
+###############################################################################
+# 12. KDE config propagation test
+###############################################################################
+
+section "12. KDE NEW-USER PROPAGATION TEST"
+
+if [[ -n "$SKEL" ]]; then
+
+    TMP_HOME="$REPORT_DIR/test-home"
+    rm -rf "$TMP_HOME"
+
+    mkdir -p "$TMP_HOME"
+
+    cp -a "$SKEL"/. "$TMP_HOME"/ 2>/dev/null || true
+
+    EXPECTED_KDE=(
+        ".config/kdeglobals"
+        ".config/plasmarc"
+        ".config/kwinrc"
+        ".config/kglobalshortcutsrc"
+        ".config/kcminputrc"
+        ".config/plasma-org.kde.plasma.desktop-appletsrc"
+    )
+
+    FOUND_KDE=0
+
+    for f in "${EXPECTED_KDE[@]}"; do
+        if [[ -e "$TMP_HOME/$f" ]]; then
+            pass "New-user simulation receives: $f"
+            FOUND_KDE=$((FOUND_KDE + 1))
+        else
+            info "Not present in new-user simulation: $f"
+        fi
+    done
+
+    if (( FOUND_KDE > 0 )); then
+        pass "KDE configuration propagation through /etc/skel works"
+    else
+        warn "No KDE configuration propagated through /etc/skel"
+    fi
+
+else
+    fail "Cannot test new-user propagation because /etc/skel is missing"
+fi
+
+###############################################################################
+# 13. Detect global KDE config
+###############################################################################
+
+section "13. GLOBAL KDE CONFIGURATION"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    GLOBAL_KDE_DIRS=(
+        "$AIROOTFS/etc/xdg"
+        "$AIROOTFS/usr/share/kde-settings"
+        "$AIROOTFS/etc/kde"
+    )
+
+    for d in "${GLOBAL_KDE_DIRS[@]}"; do
+        if [[ -d "$d" ]]; then
+            pass "Global KDE/config directory exists: ${d#$AIROOTFS/}"
+        fi
+    done
+
+    if [[ -d "$AIROOTFS/etc/xdg" ]]; then
+        find "$AIROOTFS/etc/xdg" \
+            -maxdepth 3 \
+            -type f \
+            \( -iname '*kde*' -o -iname '*plasma*' -o -iname '*kwin*' \) \
+            -print 2>/dev/null \
+            | sort \
+            | tee "$REPORT_DIR/global-kde-files.txt"
+    fi
+fi
+
+###############################################################################
+# 14. KDE environment variables
+###############################################################################
+
+section "14. KDE ENVIRONMENT VARIABLES"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    ENV_FILES=(
+        "$AIROOTFS/etc/environment"
+        "$AIROOTFS/etc/profile"
+        "$AIROOTFS/etc/profile.d"
+    )
+
+    for f in "${ENV_FILES[@]}"; do
+        if [[ -e "$f" ]]; then
+            grep -RniE \
+                'KDE|PLASMA|QT_QPA_PLATFORM|XDG_CURRENT_DESKTOP|XDG_SESSION_DESKTOP' \
+                "$f" 2>/dev/null \
+                | tee -a "$REPORT_DIR/kde-environment.txt" || true
+        fi
+    done
+fi
+
+###############################################################################
+# 15. Display manager / SDDM
+###############################################################################
+
+section "15. SDDM / DISPLAY MANAGER"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    if [[ -d "$AIROOTFS/etc/sddm.conf.d" ]]; then
+        pass "sddm.conf.d exists"
+
+        find "$AIROOTFS/etc/sddm.conf.d" \
+            -type f \
+            -maxdepth 2 \
+            -print 2>/dev/null \
+            | sort \
+            | tee "$REPORT_DIR/sddm-files.txt"
+    else
+        warn "No /etc/sddm.conf.d"
+    fi
+
+    if [[ -f "$AIROOTFS/etc/sddm.conf" ]]; then
+        pass "/etc/sddm.conf exists"
+        cp "$AIROOTFS/etc/sddm.conf" "$REPORT_DIR/sddm.conf"
+    fi
+
+    if [[ -d "$AIROOTFS/usr/share/sddm" ]]; then
+        pass "SDDM resources exist"
+    else
+        warn "No /usr/share/sddm in airootfs"
+    fi
+fi
+
+###############################################################################
+# 16. systemd services
+###############################################################################
+
+section "16. SYSTEMD SERVICES"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    SERVICE_DIRS=(
+        "$AIROOTFS/etc/systemd/system"
+        "$AIROOTFS/usr/lib/systemd/system"
+    )
+
+    for d in "${SERVICE_DIRS[@]}"; do
+        if [[ -d "$d" ]]; then
+            pass "systemd directory exists: ${d#$AIROOTFS/}"
+
+            find "$d" \
+                -type f \
+                \( -name '*.service' -o -name '*.target' -o -name '*.timer' \) \
+                -print 2>/dev/null \
+                | sort \
+                | tee -a "$REPORT_DIR/systemd-files.txt"
+        fi
+    done
+
+    if [[ -d "$AIROOTFS/etc/systemd/system" ]]; then
+
+        while IFS= read -r unit; do
+            [[ -z "$unit" ]] && continue
+
+            basename="$(basename "$unit")"
+
+            if [[ "$unit" == *.service ]]; then
+                if grep -qE '^\[Unit\]' "$unit" &&
+                   grep -qE '^\[Service\]' "$unit"; then
+                    pass "Looks like valid service unit: $basename"
+                else
+                    warn "Possibly malformed service: $basename"
+                fi
+            fi
+        done < <(
+            find "$AIROOTFS/etc/systemd/system" \
+                -type f \
+                -name '*.service' \
+                -print 2>/dev/null
+        )
+    fi
+fi
+
+###############################################################################
+# 17. Enabled services
+###############################################################################
+
+section "17. ENABLED SYSTEMD SERVICES"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    if [[ -d "$AIROOTFS/etc/systemd/system" ]]; then
+
+        find "$AIROOTFS/etc/systemd/system" \
+            -type l \
+            \( -path '*/multi-user.target.wants/*' \
+            -o -path '*/graphical.target.wants/*' \
+            -o -path '*/systemd-user-sessions.service' \) \
+            -print 2>/dev/null \
+            | sort \
+            | tee "$REPORT_DIR/enabled-services.txt"
+
+        while IFS= read -r link; do
+            [[ -z "$link" ]] && continue
+
+            # /etc/resolv.conf intentionally points to a runtime-created
+            # systemd-resolved file under /run.
+            if [[ "${link#$AIROOTFS/}" == "etc/resolv.conf" ]] &&
+               [[ "$(readlink "$link")" == "/run/systemd/resolve/stub-resolv.conf" ]]; then
+                info "Valid runtime systemd-resolved symlink: etc/resolv.conf -> /run/systemd/resolve/stub-resolv.conf"
+            elif [[ -e "$link" ]]; then
+                pass "Valid systemd symlink: ${link#$AIROOTFS/}"
+            else
+                fail "Broken systemd symlink: ${link#$AIROOTFS/}"
+            fi
+        done < <(
+            find "$AIROOTFS/etc/systemd/system" \
+                -type l \
+                -print 2>/dev/null
+        )
+    fi
+fi
+
+###############################################################################
+# 18. Broken symlinks
+###############################################################################
+
+section "18. BROKEN SYMLINK SCAN"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    BROKEN_LINKS="$REPORT_DIR/broken-symlinks.txt"
+
+    : > "$BROKEN_LINKS"
+
+    while IFS= read -r link; do
+        [[ -z "$link" ]] && continue
+
+        rel="${link#$AIROOTFS/}"
+        target="$(readlink "$link")"
+
+        # /etc/resolv.conf intentionally points to a file created
+        # by systemd-resolved at runtime under /run.
+        if [[ "$rel" == "etc/resolv.conf" ]] &&
+           [[ "$target" == "/run/systemd/resolve/stub-resolv.conf" ]]; then
+            info "Valid runtime symlink: $rel -> $target"
+            continue
+        fi
+
+        printf '%s -> %s\n' "$rel" "$target" | tee -a "$BROKEN_LINKS"
+    done < <(
+        find "$AIROOTFS"             -xtype l             -print 2>/dev/null
+    )
+
+    BROKEN_COUNT="$(wc -l < "$BROKEN_LINKS")"
+
+    if (( BROKEN_COUNT == 0 )); then
+        pass "No broken symlinks found"
+    else
+        fail "Found $BROKEN_COUNT broken symlinks"
+    fi
+fi
+
+###############################################################################
+# 19. Permissions
+###############################################################################
+
+
+###############################################################################
+# 19. Permissions
+###############################################################################
+
+section "19. EXECUTABLE / PERMISSION AUDIT"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    EXEC_SCRIPT_COUNT=0
+
+    while IFS= read -r f; do
+        EXEC_SCRIPT_COUNT=$((EXEC_SCRIPT_COUNT + 1))
+
+        if [[ -x "$f" ]]; then
+            pass "Executable script: ${f#$AIROOTFS/}"
+        else
+            warn "Non-executable script-like file: ${f#$AIROOTFS/}"
+        fi
+    done < <(
+        find "$AIROOTFS" \
+            -type f \
+            \( -name '*.sh' -o -name '*.bash' \) \
+            -not -path '*/usr/share/doc/*' \
+            -print 2>/dev/null
+    )
+
+    info "Script-like files scanned: $EXEC_SCRIPT_COUNT"
+fi
+
+###############################################################################
+# 20. Shell syntax check
+###############################################################################
+
+section "20. SHELL SCRIPT SYNTAX"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    SCRIPT_ERRORS=0
+
+    while IFS= read -r script; do
+
+        if bash -n "$script" 2>/dev/null; then
+            pass "Shell syntax OK: ${script#$AIROOTFS/}"
+        else
+            fail "Shell syntax ERROR: ${script#$AIROOTFS/}"
+            bash -n "$script" 2>&1 \
+                | tee -a "$REPORT_DIR/shell-errors.txt"
+            SCRIPT_ERRORS=$((SCRIPT_ERRORS + 1))
+        fi
+
+    done < <(
+        find "$AIROOTFS" \
+            -type f \
+            \( -name '*.sh' -o -name '*.bash' \) \
+            -print 2>/dev/null
+    )
+
+    if (( SCRIPT_ERRORS == 0 )); then
+        pass "No shell syntax errors found"
+    fi
+fi
+
+###############################################################################
+# 21. Shellcheck
+###############################################################################
+
+section "21. SHELLCHECK"
+
+if have shellcheck && [[ -n "$AIROOTFS" ]]; then
+
+    while IFS= read -r script; do
+
+        if shellcheck -S warning "$script" \
+            > "$REPORT_DIR/shellcheck-$(basename "$script").txt" 2>&1; then
+            pass "ShellCheck clean: ${script#$AIROOTFS/}"
+        else
+            warn "ShellCheck warnings/errors: ${script#$AIROOTFS/}"
+        fi
+
+    done < <(
+        find "$AIROOTFS" \
+            -type f \
+            \( -name '*.sh' -o -name '*.bash' \) \
+            -print 2>/dev/null
+    )
+
+else
+    warn "ShellCheck unavailable"
+fi
+
+###############################################################################
+# 22. Root/user configuration mistakes
+###############################################################################
+
+section "22. ROOT VS USER KDE CONFIG AUDIT"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    ROOT_CONFIG="$AIROOTFS/root/.config"
+    SKEL_CONFIG="$AIROOTFS/etc/skel/.config"
+
+    if [[ -d "$ROOT_CONFIG" ]]; then
+        info "Root KDE config exists"
+    fi
+
+    if [[ -d "$SKEL_CONFIG" ]]; then
+        info "Skel KDE config exists"
+    fi
+
+    if [[ -d "$ROOT_CONFIG" && ! -d "$SKEL_CONFIG" ]]; then
+        warn "KDE config exists for root but not /etc/skel"
+        warn "This means root's Plasma customization may NOT propagate to new users"
+    fi
+
+    if [[ -d "$ROOT_CONFIG" && -d "$SKEL_CONFIG" ]]; then
+
+        ROOT_FILES="$REPORT_DIR/root-kde-files.txt"
+        SKEL_FILES="$REPORT_DIR/skel-kde-files.txt"
+
+        find "$ROOT_CONFIG" \
+            -maxdepth 3 \
+            -type f \
+            -print \
+            | sed "s#^$ROOT_CONFIG/##" \
+            | sort \
+            > "$ROOT_FILES"
+
+        find "$SKEL_CONFIG" \
+            -maxdepth 3 \
+            -type f \
+            -print \
+            | sed "s#^$SKEL_CONFIG/##" \
+            | sort \
+            > "$SKEL_FILES"
+
+        comm -23 "$ROOT_FILES" "$SKEL_FILES" \
+            | tee "$REPORT_DIR/root-only-kde-config.txt"
+
+        ROOT_ONLY="$(wc -l < "$REPORT_DIR/root-only-kde-config.txt")"
+
+        if (( ROOT_ONLY == 0 )); then
+            pass "No obvious root-only KDE configuration files"
+        else
+            warn "$ROOT_ONLY KDE files exist in root but not /etc/skel"
+        fi
+    fi
+fi
+
+###############################################################################
+# 23. User account setup
+###############################################################################
+
+section "23. USER ACCOUNT CONFIGURATION"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    if [[ -f "$AIROOTFS/etc/passwd" ]]; then
+
+        awk -F: '
+            $3 >= 1000 && $3 < 60000 {
+                print $1 ":" $3 ":" $6 ":" $7
+            }
+        ' "$AIROOTFS/etc/passwd" \
+        | tee "$REPORT_DIR/users.txt"
+
+        USER_COUNT="$(
+            awk -F: '$3 >= 1000 && $3 < 60000 {count++} END {print count+0}' \
+            "$AIROOTFS/etc/passwd"
+        )"
+
+        if (( USER_COUNT > 0 )); then
+            info "Pre-created regular users: $USER_COUNT"
+        else
+            info "No regular user pre-created in airootfs"
+        fi
+    fi
+fi
+
+###############################################################################
+# 24. sudo configuration
+###############################################################################
+
+section "24. SUDO CONFIGURATION"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    if [[ -f "$AIROOTFS/etc/sudoers" ]]; then
+
+        if grep -qE '^[[:space:]]*%wheel[[:space:]]+ALL=\(ALL(:ALL)?\)[[:space:]]+ALL' \
+            "$AIROOTFS/etc/sudoers"; then
+            pass "wheel sudo rule found"
+        else
+            warn "Standard wheel sudo rule not detected"
+        fi
+
+    else
+        warn "/etc/sudoers missing"
+    fi
+
+    if [[ -d "$AIROOTFS/etc/sudoers.d" ]]; then
+        find "$AIROOTFS/etc/sudoers.d" \
+            -type f \
+            -maxdepth 2 \
+            -print 2>/dev/null \
+            | sort \
+            | tee "$REPORT_DIR/sudoers-d.txt"
+    fi
+fi
+
+###############################################################################
+# 25. NetworkManager
+###############################################################################
+
+section "25. NETWORK CONFIGURATION"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    if [[ -d "$AIROOTFS/etc/NetworkManager" ]]; then
+        pass "NetworkManager configuration directory exists"
+    else
+        warn "NetworkManager configuration directory missing"
+    fi
+
+    if [[ -d "$AIROOTFS/etc/systemd/system/multi-user.target.wants" ]]; then
+        if find "$AIROOTFS/etc/systemd/system/multi-user.target.wants" \
+            -type l \
+            -lname '*NetworkManager*' \
+            -print 2>/dev/null \
+            | grep -q .; then
+            pass "NetworkManager appears enabled"
+        else
+            warn "NetworkManager enablement not detected"
+        fi
+    fi
+fi
+
+###############################################################################
+# 26. Bootloader
+###############################################################################
+
+section "26. BOOTLOADER / BOOT CONFIGURATION"
+
+if [[ -n "$PROFILE_DIR" ]]; then
+
+    BOOT_DIRS=(
+        "$PROFILE_DIR/efiboot"
+        "$PROFILE_DIR/syslinux"
+        "$PROFILE_DIR/grub"
+        "$PROFILE_DIR/isolinux"
+    )
+
+    BOOT_FOUND=0
+
+    for d in "${BOOT_DIRS[@]}"; do
+        if [[ -d "$d" ]]; then
+            pass "Boot configuration found: ${d#$PROFILE_DIR/}"
+            BOOT_FOUND=$((BOOT_FOUND + 1))
+
+            find "$d" \
+                -maxdepth 4 \
+                -type f \
+                -print 2>/dev/null \
+                | sort \
+                | tee -a "$REPORT_DIR/boot-files.txt"
+        fi
+    done
+
+    if (( BOOT_FOUND == 0 )); then
+        warn "No obvious bootloader directory found in profile"
+    fi
+fi
+
+###############################################################################
+# 27. profiledef.sh syntax
+###############################################################################
+
+section "27. PROFILEDEF SYNTAX"
+
+if [[ -n "$PROFILE_DIR" && -f "$PROFILE_DIR/profiledef.sh" ]]; then
+
+    if bash -n "$PROFILE_DIR/profiledef.sh" 2>/dev/null; then
+        pass "profiledef.sh syntax OK"
+    else
+        fail "profiledef.sh syntax ERROR"
+
+        bash -n "$PROFILE_DIR/profiledef.sh" 2>&1 \
+            | tee "$REPORT_DIR/profiledef-error.txt"
+    fi
+fi
+
+###############################################################################
+# 28. profiledef inspection
+###############################################################################
+
+section "28. PROFILEDEF CONTENT"
+
+if [[ -n "$PROFILE_DIR" && -f "$PROFILE_DIR/profiledef.sh" ]]; then
+
+    grep -nE \
+        'file_permissions|buildmodes|pacman_conf|install_dir|bootmodes|airootfs' \
+        "$PROFILE_DIR/profiledef.sh" \
+        | tee "$REPORT_DIR/profiledef-important.txt" || true
+fi
+
+###############################################################################
+# 29. Build scripts
+###############################################################################
+
+section "29. BUILD SCRIPT DETECTION"
+
+BUILD_SCRIPTS=()
+
+while IFS= read -r script; do
+    BUILD_SCRIPTS+=("$script")
+done < <(
+    find "$PROJECT_ROOT" \
+        -maxdepth 4 \
+        -type f \
+        \( \
+            -name '*.sh' \
+            -o -name 'build' \
+            -o -name 'build.sh' \
+            -o -name 'makeiso' \
+            -o -name 'mkiso' \
+        \) \
+        -not -path '*/.git/*' \
+        -print 2>/dev/null
+)
+
+for script in "${BUILD_SCRIPTS[@]}"; do
+
+    if [[ -x "$script" ]]; then
+        pass "Executable build script: ${script#$PROJECT_ROOT/}"
+    else
+        info "Non-executable build script: ${script#$PROJECT_ROOT/}"
+    fi
+
+    if bash -n "$script" 2>/dev/null; then
+        pass "Syntax OK: ${script#$PROJECT_ROOT/}"
+    else
+        fail "Syntax error: ${script#$PROJECT_ROOT/}"
+    fi
+done
+
+###############################################################################
+# 30. Dangerous build commands
+###############################################################################
+
+section "30. BUILD SCRIPT COMMAND AUDIT"
+
+if (( ${#BUILD_SCRIPTS[@]} > 0 )); then
+
+    for script in "${BUILD_SCRIPTS[@]}"; do
+
+        grep -nE \
+            'rm[[:space:]]+-rf|mkfs|dd[[:space:]]+if=|wipefs|sgdisk|fdisk|parted|mount|umount|pacman[[:space:]]+-R|systemctl[[:space:]]+enable' \
+            "$script" \
+            2>/dev/null \
+            | tee -a "$REPORT_DIR/dangerous-commands.txt" || true
+
+    done
+fi
+
+###############################################################################
+# 31. Installer / Calamares
+###############################################################################
+
+section "31. CALAMARES / INSTALLER"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    CALAMARES_PATHS=(
+        "$AIROOTFS/etc/calamares"
+        "$AIROOTFS/usr/share/calamares"
+        "$AIROOTFS/usr/lib/calamares"
+    )
+
+    CALAMARES_FOUND=0
+
+    for d in "${CALAMARES_PATHS[@]}"; do
+        if [[ -d "$d" ]]; then
+            pass "Calamares path exists: ${d#$AIROOTFS/}"
+            CALAMARES_FOUND=$((CALAMARES_FOUND + 1))
+        fi
+    done
+
+    if (( CALAMARES_FOUND > 0 )); then
+
+        find "$AIROOTFS/etc/calamares" \
+            -maxdepth 4 \
+            -type f \
+            -print 2>/dev/null \
+            | sort \
+            | tee "$REPORT_DIR/calamares-files.txt"
+
+        if [[ -f "$AIROOTFS/etc/calamares/settings.conf" ]]; then
+            pass "Calamares settings.conf exists"
+        else
+            warn "Calamares settings.conf missing"
+        fi
+    else
+        warn "Calamares configuration not found"
+    fi
+fi
+
+###############################################################################
+# 32. Installer user creation configuration
+###############################################################################
+
+section "32. INSTALLER USER CREATION"
+
+if [[ -n "$AIROOTFS" && -d "$AIROOTFS/etc/calamares" ]]; then
+
+    grep -RniE \
+        'users|user|username|groups|sudo|wheel|home' \
+        "$AIROOTFS/etc/calamares" \
+        2>/dev/null \
+        | tee "$REPORT_DIR/calamares-user-config.txt" || true
+
+    if grep -RniE 'users' "$AIROOTFS/etc/calamares" >/dev/null 2>&1; then
+        pass "Calamares user-related configuration detected"
+    else
+        warn "Could not detect Calamares user configuration"
+    fi
+fi
+
+###############################################################################
+# 33. KDE config + installer interaction
+###############################################################################
+
+section "33. INSTALLER -> NEW USER -> KDE CHAIN"
+
+CHAIN_OK=1
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    if [[ -d "$AIROOTFS/etc/skel" ]]; then
+        pass "Stage 1: /etc/skel exists"
+    else
+        fail "Stage 1 failed: /etc/skel missing"
+        CHAIN_OK=0
+    fi
+
+    if [[ -d "$AIROOTFS/etc/skel/.config" ]]; then
+        pass "Stage 2: /etc/skel/.config exists"
+    else
+        warn "Stage 2: /etc/skel/.config missing"
+        CHAIN_OK=0
+    fi
+
+    if find "$AIROOTFS/etc/skel/.config" \
+        -maxdepth 1 \
+        -type f \
+        \( \
+            -name 'kdeglobals' \
+            -o -name 'kwinrc' \
+            -o -name 'plasmarc' \
+            -o -name 'kglobalshortcutsrc' \
+            -o -name 'plasma-org.kde.plasma.desktop-appletsrc' \
+        \) \
+        -print 2>/dev/null \
+        | grep -q .; then
+
+        pass "Stage 3: KDE configuration exists for new users"
+    else
+        warn "Stage 3: no standard KDE config detected in /etc/skel"
+        CHAIN_OK=0
+    fi
+
+    if (( CHAIN_OK == 1 )); then
+        pass "KDE new-user configuration chain looks valid"
+    else
+        warn "KDE new-user chain needs manual review"
+    fi
+fi
+
+###############################################################################
+# 34. File ownership
+###############################################################################
+
+section "34. OWNERSHIP AUDIT"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    # We cannot trust host ownership inside an unpacked airootfs blindly,
+    # but obvious non-root ownership is useful to flag.
+
+    find "$AIROOTFS/etc" \
+        "$AIROOTFS/usr" \
+        -xdev \
+        -type f \
+        -printf '%u:%g %p\n' \
+        2>/dev/null \
+        | awk '
+            $1 != "root:root" {
+                print
+            }
+        ' \
+        | head -n 200 \
+        | tee "$REPORT_DIR/non-root-owned-files.txt"
+
+    NONROOT="$(wc -l < "$REPORT_DIR/non-root-owned-files.txt")"
+
+    if (( NONROOT == 0 )); then
+        pass "No obvious non-root-owned system files detected"
+    else
+        warn "$NONROOT system files with non-root ownership detected (first 200 shown)"
+    fi
+fi
+
+###############################################################################
+# 35. World writable files
+###############################################################################
+
+section "35. WORLD-WRITABLE SYSTEM FILES"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    find "$AIROOTFS/etc" "$AIROOTFS/usr" \
+        -type f \
+        -perm -0002 \
+        -print 2>/dev/null \
+        | tee "$REPORT_DIR/world-writable.txt"
+
+    WW="$(wc -l < "$REPORT_DIR/world-writable.txt")"
+
+    if (( WW == 0 )); then
+        pass "No world-writable system files found"
+    else
+        warn "$WW world-writable system files found"
+    fi
+fi
+
+###############################################################################
+# 36. Config files with suspicious absolute home paths
+###############################################################################
+
+section "36. HARD-CODED HOME PATH AUDIT"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    grep -RniE \
+        '/home/[A-Za-z0-9._-]+' \
+        "$AIROOTFS/etc/skel" \
+        "$AIROOTFS/etc/xdg" \
+        "$AIROOTFS/etc/systemd" \
+        2>/dev/null \
+        | tee "$REPORT_DIR/hardcoded-home-paths.txt" || true
+
+    if [[ -s "$REPORT_DIR/hardcoded-home-paths.txt" ]]; then
+        warn "Hard-coded /home/<user> paths detected; review carefully"
+    else
+        pass "No obvious hard-coded user home paths found"
+    fi
+fi
+
+###############################################################################
+# 37. Absolute paths to old build environment
+###############################################################################
+
+section "37. BUILD-MACHINE PATH AUDIT"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    grep -RniE \
+        "$PROJECT_ROOT|/mnt/|/home/[^/]+/AKSPA|/run/media/|/tmp/" \
+        "$AIROOTFS/etc" \
+        "$AIROOTFS/usr/local" \
+        "$AIROOTFS/opt" \
+        2>/dev/null \
+        | tee "$REPORT_DIR/build-path-leaks.txt" || true
+
+    if [[ -s "$REPORT_DIR/build-path-leaks.txt" ]]; then
+        warn "Possible build-machine path leaks detected"
+    else
+        pass "No obvious build-machine path leaks detected"
+    fi
+fi
+
+###############################################################################
+# 38. KDE config ownership simulation
+###############################################################################
+
+section "38. KDE CONFIG OWNERSHIP SIMULATION"
+
+if [[ -n "$SKEL" ]]; then
+
+    SIM_HOME="$REPORT_DIR/simulated-user-home"
+
+    rm -rf "$SIM_HOME"
+    mkdir -p "$SIM_HOME"
+
+    cp -a "$SKEL"/. "$SIM_HOME"/ 2>/dev/null || true
+
+    if [[ -d "$SIM_HOME/.config" ]]; then
+
+        find "$SIM_HOME/.config" \
+            -type f \
+            -maxdepth 4 \
+            -print 2>/dev/null \
+            | sort \
+            | tee "$REPORT_DIR/simulated-kde-config.txt"
+
+        CONFIG_COUNT="$(
+            find "$SIM_HOME/.config" \
+                -type f \
+                -maxdepth 4 \
+                \( \
+                    -name 'kdeglobals' \
+                    -o -name 'kwinrc' \
+                    -o -name 'plasmarc' \
+                    -o -name '*plasma*' \
+                \) \
+                -print 2>/dev/null \
+                | wc -l
+        )"
+
+        if (( CONFIG_COUNT > 0 )); then
+            pass "Simulated new user receives KDE configuration"
+        else
+            warn "Simulated new user receives no recognizable KDE configuration"
+        fi
+    fi
+fi
+
+###############################################################################
+# 39. Detect user-level systemd configuration
+###############################################################################
+
+section "39. USER SYSTEMD CONFIGURATION"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    if [[ -d "$AIROOTFS/etc/skel/.config/systemd/user" ]]; then
+        pass "User systemd configuration exists in /etc/skel"
+
+        find "$AIROOTFS/etc/skel/.config/systemd/user" \
+            -type f \
+            -print 2>/dev/null \
+            | sort \
+            | tee "$REPORT_DIR/user-systemd.txt"
+    else
+        info "No /etc/skel user systemd configuration"
+    fi
+fi
+
+###############################################################################
+# 40. KDE autostart
+###############################################################################
+
+section "40. KDE AUTOSTART"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    AUTOSTART_PATHS=(
+        "$AIROOTFS/etc/xdg/autostart"
+        "$AIROOTFS/etc/skel/.config/autostart"
+        "$AIROOTFS/etc/skel/.config/autostart-scripts"
+    )
+
+    for d in "${AUTOSTART_PATHS[@]}"; do
+        if [[ -d "$d" ]]; then
+            pass "Autostart directory exists: ${d#$AIROOTFS/}"
+
+            find "$d" \
+                -maxdepth 2 \
+                -type f \
+                -print 2>/dev/null \
+                | sort \
+                | tee -a "$REPORT_DIR/autostart.txt"
+        fi
+    done
+fi
+
+###############################################################################
+# 41. Initramfs
+###############################################################################
+
+section "41. INITRAMFS"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    if [[ -d "$AIROOTFS/boot" ]]; then
+
+        find "$AIROOTFS/boot" \
+            -maxdepth 2 \
+            -type f \
+            \( \
+                -name 'vmlinuz*' \
+                -o -name 'initramfs*' \
+                -o -name '*.img' \
+            \) \
+            -print 2>/dev/null \
+            | sort \
+            | tee "$REPORT_DIR/boot-images.txt"
+
+        if find "$AIROOTFS/boot" \
+            -maxdepth 1 \
+            -type f \
+            -name 'vmlinuz*' \
+            -print 2>/dev/null \
+            | grep -q .; then
+            pass "Kernel image found"
+        else
+            warn "No kernel image found in airootfs/boot"
+        fi
+
+        if find "$AIROOTFS/boot" \
+            -maxdepth 1 \
+            -type f \
+            -name 'initramfs*' \
+            -print 2>/dev/null \
+            | grep -q .; then
+            pass "Initramfs image found"
+        else
+            warn "No initramfs image found in airootfs/boot"
+        fi
+    fi
+fi
+
+###############################################################################
+# 42. Pacman configuration
+###############################################################################
+
+section "42. PACMAN CONFIGURATION"
+
+if [[ -n "$AIROOTFS" && -f "$AIROOTFS/etc/pacman.conf" ]]; then
+
+    grep -nE \
+        '^\[[^]]+\]|^\s*Include|^\s*SigLevel|^\s*Server|^\s*ParallelDownloads' \
+        "$AIROOTFS/etc/pacman.conf" \
+        | tee "$REPORT_DIR/pacman-config.txt"
+
+    if grep -qE '^\[core\]' "$AIROOTFS/etc/pacman.conf"; then
+        pass "core repository configured"
+    else
+        warn "core repository not explicitly visible in pacman.conf"
+    fi
+
+    if grep -qE '^\[extra\]' "$AIROOTFS/etc/pacman.conf"; then
+        pass "extra repository configured"
+    else
+        warn "extra repository not explicitly visible"
+    fi
+fi
+
+###############################################################################
+# 43. Local package files
+###############################################################################
+
+section "43. LOCAL PACKAGE FILES"
+
+find "$PROJECT_ROOT" \
+    -type f \
+    \( \
+        -name '*.pkg.tar.zst' \
+        -o -name '*.pkg.tar.xz' \
+        -o -name '*.pkg.tar' \
+    \) \
+    -not -path '*/.git/*' \
+    -print 2>/dev/null \
+    | sort \
+    | tee "$REPORT_DIR/local-packages.txt"
+
+LOCAL_PKGS="$(wc -l < "$REPORT_DIR/local-packages.txt")"
+
+if (( LOCAL_PKGS > 0 )); then
+    info "Local package files: $LOCAL_PKGS"
+fi
+
+###############################################################################
+# 44. AUR / external package detection
+###############################################################################
+
+section "44. EXTERNAL / AUR PACKAGE REFERENCES"
+
+if [[ -n "$PACKAGE_FILE" ]]; then
+
+    grep -nEi \
+        '(^|/)(yay|paru|calamares|google-chrome|nvidia-dkms|.*-bin)([^a-zA-Z0-9_-]|$)' \
+        "$PACKAGE_FILE" \
+        | tee "$REPORT_DIR/external-packages.txt" || true
+
+    if [[ -s "$REPORT_DIR/external-packages.txt" ]]; then
+        warn "Potential external/AUR packages detected in package list"
+    else
+        pass "No obvious external/AUR package names detected"
+    fi
+fi
+
+###############################################################################
+# 45. ISO files
+###############################################################################
+
+section "45. GENERATED ISO DETECTION"
+
+ISO_FILES=()
+
+while IFS= read -r iso; do
+    ISO_FILES+=("$iso")
+done < <(
+    find "$PROJECT_ROOT" \
+        -type f \
+        \( -iname '*.iso' -o -iname '*.iso.zst' \) \
+        -not -path '*/.git/*' \
+        -print 2>/dev/null
+)
+
+if (( ${#ISO_FILES[@]} == 0 )); then
+    warn "No generated ISO found"
+else
+
+    for iso in "${ISO_FILES[@]}"; do
+
+        SIZE="$(du -h "$iso" | awk '{print $1}')"
+
+        info "ISO: ${iso#$PROJECT_ROOT/} ($SIZE)"
+
+        if file "$iso" | grep -qi 'ISO 9660'; then
+            pass "ISO filesystem recognized: ${iso#$PROJECT_ROOT/}"
+        else
+            warn "Could not identify ISO filesystem: ${iso#$PROJECT_ROOT/}"
+        fi
+
+        if have xorriso; then
+            xorriso -indev "$iso" -toc 2>&1 \
+                | tee "$REPORT_DIR/xorriso-$(basename "$iso").txt" \
+                >/dev/null || true
+        fi
+
+        if have isoinfo; then
+            isoinfo -d -i "$iso" 2>&1 \
+                | tee "$REPORT_DIR/isoinfo-$(basename "$iso").txt" \
+                >/dev/null || true
+        fi
+    done
+fi
+
+###############################################################################
+# 46. ISO boot markers
+###############################################################################
+
+section "46. ISO BOOT MARKERS"
+
+for iso in "${ISO_FILES[@]:-}"; do
+    [[ -f "$iso" ]] || continue
+
+    info "Checking: ${iso#$PROJECT_ROOT/}"
+
+    if have xorriso; then
+
+        BOOT_INFO="$REPORT_DIR/bootinfo-$(basename "$iso").txt"
+
+        xorriso -indev "$iso" -report_el_torito as_mkisofs \
+            2>&1 \
+            | tee "$BOOT_INFO"
+
+        if grep -qiE 'EFI|El Torito|BIOS' "$BOOT_INFO"; then
+            pass "Boot metadata detected in ISO"
+        else
+            warn "Could not confirm BIOS/UEFI boot metadata"
+        fi
+    else
+        warn "xorriso unavailable; ISO boot metadata not fully checked"
+    fi
+done
+
+###############################################################################
+# 47. ISO file listing
+###############################################################################
+
+section "47. ISO CONTENT LIST"
+
+for iso in "${ISO_FILES[@]:-}"; do
+    [[ -f "$iso" ]] || continue
+
+    if have bsdtar; then
+
+        bsdtar -tf "$iso" 2>/dev/null \
+            | tee "$REPORT_DIR/iso-tree-$(basename "$iso").txt" \
+            >/dev/null
+
+        ISO_ENTRY_COUNT="$(
+            wc -l < "$REPORT_DIR/iso-tree-$(basename "$iso").txt"
+        )"
+
+        info "ISO entries: $ISO_ENTRY_COUNT"
+
+        if grep -qE '(^|/)EFI/' \
+            "$REPORT_DIR/iso-tree-$(basename "$iso").txt"; then
+            pass "EFI directory found inside ISO"
+        else
+            warn "EFI directory not detected in ISO listing"
+        fi
+
+        if grep -qE '(^|/)boot/' \
+            "$REPORT_DIR/iso-tree-$(basename "$iso").txt"; then
+            pass "boot directory found inside ISO"
+        else
+            warn "boot directory not detected in ISO listing"
+        fi
+    fi
+done
+
+###############################################################################
+# 48. Detect missing referenced files in configs
+###############################################################################
+
+section "48. CONFIG REFERENCE AUDIT"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    REFERENCED_PATHS="$REPORT_DIR/referenced-paths.txt"
+
+    grep -RhoE \
+        '(/etc/[A-Za-z0-9._/@+-]+|/usr/[A-Za-z0-9._/@+-]+|/opt/[A-Za-z0-9._/@+-]+)' \
+        "$AIROOTFS/etc" \
+        "$AIROOTFS/usr/local" \
+        "$AIROOTFS/opt" \
+        2>/dev/null \
+        | sort -u \
+        | head -n 1000 \
+        > "$REFERENCED_PATHS"
+
+    info "Collected referenced absolute paths for manual review"
+
+    while IFS= read -r path; do
+
+        [[ -z "$path" ]] && continue
+
+        # Ignore paths that are obviously variable/dynamic.
+        case "$path" in
+            *'$'*|*'%'*|*'*'*|*/...*)
+                continue
+                ;;
+        esac
+
+        if [[ ! -e "$AIROOTFS$path" ]]; then
+            warn "Referenced path not found: $path"
+        fi
+
+    done < "$REFERENCED_PATHS"
+fi
+
+###############################################################################
+# 49. Package list duplicates
+###############################################################################
+
+section "49. PACKAGE DUPLICATES"
+
+if [[ -n "$PACKAGE_FILE" ]]; then
+
+    DUPLICATES="$REPORT_DIR/package-duplicates.txt"
+
+    grep -vE '^[[:space:]]*(#|$)' "$PACKAGE_FILE" \
+        | sort \
+        | uniq -d \
+        | tee "$DUPLICATES"
+
+    if [[ ! -s "$DUPLICATES" ]]; then
+        pass "No duplicate package entries"
+    else
+        warn "Duplicate package entries detected"
+    fi
+fi
+
+###############################################################################
+# 50. Package naming sanity
+###############################################################################
+
+section "50. PACKAGE NAME SANITY"
+
+if [[ -n "$PACKAGE_FILE" ]]; then
+
+    BAD_PACKAGE_LINES="$REPORT_DIR/suspicious-package-lines.txt"
+
+    grep -nE \
+        '^[[:space:]]*($|#)|[[:space:]]|http://|https://|file://|/home/|/tmp/' \
+        "$PACKAGE_FILE" \
+        | tee "$BAD_PACKAGE_LINES" || true
+
+    if [[ ! -s "$BAD_PACKAGE_LINES" ]]; then
+        pass "No suspicious package-list lines"
+    else
+        info "Review suspicious package-list lines"
+    fi
+fi
+
+###############################################################################
+# 51. Desktop/session files
+###############################################################################
+
+section "51. PLASMA SESSION FILES"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    SESSION_FOUND=0
+
+    for d in \
+        "$AIROOTFS/usr/share/xsessions" \
+        "$AIROOTFS/usr/share/wayland-sessions"; do
+
+        if [[ -d "$d" ]]; then
+
+            find "$d" \
+                -maxdepth 1 \
+                -type f \
+                -name '*.desktop' \
+                -print 2>/dev/null \
+                | sort \
+                | tee -a "$REPORT_DIR/session-files.txt"
+
+            if find "$d" \
+                -maxdepth 1 \
+                -type f \
+                -name '*.desktop' \
+                -print 2>/dev/null \
+                | grep -qi 'plasma'; then
+                pass "Plasma session found in ${d#$AIROOTFS/}"
+                SESSION_FOUND=1
+            fi
+        fi
+    done
+
+    if (( SESSION_FOUND == 0 )); then
+        warn "No Plasma session desktop file detected"
+    fi
+fi
+
+###############################################################################
+# 52. Wayland/X11
+###############################################################################
+
+section "52. PLASMA X11 / WAYLAND SUPPORT"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    if [[ -d "$AIROOTFS/usr/share/wayland-sessions" ]]; then
+        if find "$AIROOTFS/usr/share/wayland-sessions" \
+            -type f \
+            -name '*.desktop' \
+            -print 2>/dev/null \
+            | grep -qi 'plasma'; then
+            pass "Plasma Wayland session detected"
+        else
+            warn "Wayland sessions directory exists but Plasma Wayland session not detected"
+        fi
+    fi
+
+    if [[ -d "$AIROOTFS/usr/share/xsessions" ]]; then
+        if find "$AIROOTFS/usr/share/xsessions" \
+            -type f \
+            -name '*.desktop' \
+            -print 2>/dev/null \
+            | grep -qi 'plasma'; then
+            pass "Plasma X11 session detected"
+        else
+            warn "X11 sessions directory exists but Plasma X11 session not detected"
+        fi
+    fi
+fi
+
+###############################################################################
+# 53. Graphics stack
+###############################################################################
+
+section "53. GRAPHICS STACK"
+
+if [[ -n "$PACKAGE_FILE" ]]; then
+
+    GRAPHICS_PACKAGES=(
+        mesa
+        lib32-mesa
+        vulkan-icd-loader
+        xorg-server
+        wayland
+        kwin
+        plasma-workspace
+    )
+
+    for pkg in "${GRAPHICS_PACKAGES[@]}"; do
+        if grep -qx "$pkg" "$REPORT_DIR/packages-clean.txt"; then
+            pass "Graphics/session package listed: $pkg"
+        else
+            info "Graphics/session package not explicitly listed: $pkg"
+        fi
+    done
+fi
+
+###############################################################################
+# 54. Firmware
+###############################################################################
+
+section "54. FIRMWARE"
+
+if [[ -n "$PACKAGE_FILE" ]]; then
+
+    if grep -qx "linux-firmware" "$REPORT_DIR/packages-clean.txt"; then
+        pass "linux-firmware listed"
+    else
+        warn "linux-firmware not explicitly listed"
+    fi
+fi
+
+###############################################################################
+# 55. Locale
+###############################################################################
+
+section "55. LOCALE CONFIGURATION"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    if [[ -f "$AIROOTFS/etc/locale.gen" ]]; then
+        pass "locale.gen exists"
+
+        grep -vE '^[[:space:]]*#|^[[:space:]]*$' \
+            "$AIROOTFS/etc/locale.gen" \
+            | tee "$REPORT_DIR/locales-enabled.txt"
+    else
+        warn "locale.gen missing"
+    fi
+
+    if [[ -f "$AIROOTFS/etc/locale.conf" ]]; then
+        pass "locale.conf exists"
+        cat "$AIROOTFS/etc/locale.conf"
+    else
+        warn "locale.conf missing"
+    fi
+fi
+
+###############################################################################
+# 56. Timezone
+###############################################################################
+
+section "56. TIMEZONE"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    if [[ -L "$AIROOTFS/etc/localtime" ]]; then
+        TARGET="$(readlink "$AIROOTFS/etc/localtime")"
+        pass "Timezone symlink exists: $TARGET"
+    elif [[ -e "$AIROOTFS/etc/localtime" ]]; then
+        warn "/etc/localtime exists but is not a symlink"
+    else
+        warn "/etc/localtime missing"
+    fi
+fi
+
+###############################################################################
+# 57. Hostname
+###############################################################################
+
+section "57. HOSTNAME"
+
+if [[ -n "$AIROOTFS" && -f "$AIROOTFS/etc/hostname" ]]; then
+    HOSTNAME_VALUE="$(cat "$AIROOTFS/etc/hostname")"
+
+    if [[ -n "$HOSTNAME_VALUE" ]]; then
+        info "Default hostname: $HOSTNAME_VALUE"
+    else
+        warn "hostname file is empty"
+    fi
+fi
+
+###############################################################################
+# 58. fstab
+###############################################################################
+
+section "58. FSTAB"
+
+if [[ -n "$AIROOTFS" && -f "$AIROOTFS/etc/fstab" ]]; then
+
+    if grep -qE '^[^#[:space:]]+[[:space:]]+/[[:space:]]' \
+        "$AIROOTFS/etc/fstab"; then
+        info "fstab contains a root filesystem entry"
+    else
+        info "No static root fstab entry detected"
+    fi
+
+    if grep -qE '^[^#[:space:]]+[[:space:]]+/home[[:space:]]' \
+        "$AIROOTFS/etc/fstab"; then
+        info "fstab contains /home entry"
+    fi
+fi
+
+###############################################################################
+# 59. Build reproducibility
+###############################################################################
+
+section "59. BUILD ENVIRONMENT REFERENCES"
+
+if [[ -n "$PROFILE_DIR" ]]; then
+
+    grep -RniE \
+        'USER=|HOME=|PWD=|PATH=|$(whoami)|id -u|id -un' \
+        "$PROFILE_DIR" \
+        2>/dev/null \
+        | tee "$REPORT_DIR/build-env-references.txt" || true
+fi
+
+###############################################################################
+# 60. Git status
+###############################################################################
+
+section "60. GIT STATUS"
+
+if [[ -d "$PROJECT_ROOT/.git" ]] && have git; then
+
+    git status --short \
+        | tee "$REPORT_DIR/git-status.txt"
+
+    info "Git branch: $(git branch --show-current 2>/dev/null || echo unknown)"
+    info "Git commit: $(git rev-parse --short HEAD 2>/dev/null || echo unknown)"
+else
+    info "Git repository not detected"
+fi
+
+###############################################################################
+# 61. Build command sanity
+###############################################################################
+
+section "61. MKARCHISO PROFILE VALIDATION"
+
+if [[ -n "$PROFILE_DIR" ]] && have mkarchiso; then
+
+    if mkarchiso -h >/dev/null 2>&1; then
+        pass "mkarchiso is callable"
+    else
+        fail "mkarchiso command failed"
+    fi
+fi
+
+###############################################################################
+# 62. Check profile with mkarchiso dry-ish parsing
+###############################################################################
+
+section "62. PROFILE PARSING"
+
+if [[ -n "$PROFILE_DIR" ]] && have mkarchiso; then
+
+    # We intentionally DO NOT build here.
+    # We only invoke help/version-related parsing where possible.
+
+    if bash -n "$PROFILE_DIR/profiledef.sh" 2>/dev/null; then
+        pass "Profile is shell-parseable"
+    else
+        fail "Profile cannot be shell-parsed"
+    fi
+fi
+
+###############################################################################
+# 63. Detect missing parent directories for files
+###############################################################################
+
+section "63. FILE / DIRECTORY STRUCTURE CONSISTENCY"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    STRUCTURE_ERRORS=0
+
+    while IFS= read -r f; do
+
+        parent="$(dirname "$f")"
+
+        if [[ ! -d "$parent" ]]; then
+            fail "Invalid parent directory for: ${f#$AIROOTFS/}"
+            STRUCTURE_ERRORS=$((STRUCTURE_ERRORS + 1))
+        fi
+
+    done < <(
+        find "$AIROOTFS" -type f -print 2>/dev/null
+    )
+
+    if (( STRUCTURE_ERRORS == 0 )); then
+        pass "Filesystem tree has valid parent directories"
+    fi
+fi
+
+###############################################################################
+# 64. Detect files with CRLF
+###############################################################################
+
+section "64. CRLF / WINDOWS LINE ENDINGS"
+
+if [[ -n "$AIROOTFS" ]]; then
+
+    CRLF_COUNT=0
+
+    while IFS= read -r f; do
+
+        if grep -Iq . "$f" 2>/dev/null; then
+            if file "$f" | grep -qi 'CRLF'; then
+                warn "CRLF file: ${f#$AIROOTFS/}"
+                CRLF_COUNT=$((CRLF_COUNT + 1))
+            fi
+        fi
+
+    done < <(
+        find "$AIROOTFS/etc" "$AIROOTFS/usr/local" \
+            -type f \
+            -print 2>/dev/null
+    )
+
+    if (( CRLF_COUNT == 0 )); then
+        pass "No obvious CRLF configuration files"
+    fi
+fi
+
+###############################################################################
+# 65. Final KDE verdict
+###############################################################################
+
+section "65. KDE NEW-USER FINAL VERDICT"
+
+KDE_VERDICT="UNKNOWN"
+
+if [[ -n "$SKEL" ]]; then
+
+    HAS_CONFIG=0
+
+    for f in \
+        "$SKEL/.config/kdeglobals" \
+        "$SKEL/.config/kwinrc" \
+        "$SKEL/.config/plasmarc" \
+        "$SKEL/.config/kglobalshortcutsrc" \
+        "$SKEL/.config/plasma-org.kde.plasma.desktop-appletsrc"; do
+
+        if [[ -f "$f" ]]; then
+            HAS_CONFIG=$((HAS_CONFIG + 1))
+        fi
+    done
+
+    if (( HAS_CONFIG >= 1 )); then
+        KDE_VERDICT="LIKELY"
+        pass "KDE graphical configuration should propagate to newly created users through /etc/skel"
+    else
+        KDE_VERDICT="NO"
+        fail "KDE graphical configuration is NOT clearly propagated through /etc/skel"
+    fi
+else
+    KDE_VERDICT="NO-SKEL"
+    fail "Cannot establish KDE new-user propagation because /etc/skel is missing"
+fi
+
+###############################################################################
+# 66. Overall static verdict
+###############################################################################
+
+section "67. FINAL STATIC VERDICT"
+
+log ""
+log "PASS : $PASS"
+log "WARN : $WARN"
+log "FAIL : $FAIL"
+log "INFO : $INFO"
+log ""
+
+if (( FAIL == 0 )); then
+    if (( WARN == 0 )); then
+        log "${GREEN}STATIC VERDICT: PASS${RESET}"
+        log "No blocking static problems were detected."
+    else
+        log "${YELLOW}STATIC VERDICT: PASS WITH WARNINGS${RESET}"
+        log "No obvious blocking errors, but warnings require review."
+    fi
+else
+    log "${RED}STATIC VERDICT: FAIL${RESET}"
+    log "Blocking problems were detected."
+fi
+
+log ""
+log "KDE NEW USER CONFIGURATION: $KDE_VERDICT"
+log ""
+log "Report directory:"
+log "$REPORT_DIR"
+
+###############################################################################
+# 67. Machine-readable summary
+###############################################################################
+
+cat > "$REPORT_DIR/summary.txt" <<EOF
+AKSPA Linux ISO Preflight Audit
+================================
+
+Date: $(date)
+
+Project:
+$PROJECT_ROOT
+
+Profile:
+${PROFILE_DIR:-NOT FOUND}
+
+airootfs:
+${AIROOTFS:-NOT FOUND}
+
+Packages:
+${PACKAGE_FILE:-NOT FOUND}
+
+PASS=$PASS
+WARN=$WARN
+FAIL=$FAIL
+INFO=$INFO
+
+KDE_NEW_USER=$KDE_VERDICT
+
+Static verdict:
+$(
+    if (( FAIL == 0 && WARN == 0 )); then
+        echo PASS
+    elif (( FAIL == 0 )); then
+        echo PASS_WITH_WARNINGS
+    else
+        echo FAIL
+    fi
+)
+EOF
+
+###############################################################################
+# 68. Export complete project metadata
+###############################################################################
+
+section "68. REPORT EXPORT"
+
+{
+    echo "=== PROJECT ==="
+    echo "$PROJECT_ROOT"
+    echo
+    echo "=== PROFILE ==="
+    echo "${PROFILE_DIR:-NOT FOUND}"
+    echo
+    echo "=== AIROOTFS ==="
+    echo "${AIROOTFS:-NOT FOUND}"
+    echo
+    echo "=== PACKAGE FILE ==="
+    echo "${PACKAGE_FILE:-NOT FOUND}"
+    echo
+    echo "=== KDE VERDICT ==="
+    echo "$KDE_VERDICT"
+    echo
+    echo "=== COUNTERS ==="
+    echo "PASS=$PASS"
+    echo "WARN=$WARN"
+    echo "FAIL=$FAIL"
+    echo "INFO=$INFO"
+} > "$REPORT_DIR/metadata.txt"
+
+###############################################################################
+# 69. Final
+###############################################################################
+
+section "AUDIT COMPLETE"
+
+log "Full report:"
+log "$LOG"
+
+log ""
+log "Summary:"
+cat "$REPORT_DIR/summary.txt"
+
+log ""
+log "${MAGENTA}IMPORTANT:${RESET}"
+log "This audit verifies static structure and configuration."
+log "It does NOT replace a real BIOS/UEFI + VM/hardware boot test."
+
+exit "$FAIL"

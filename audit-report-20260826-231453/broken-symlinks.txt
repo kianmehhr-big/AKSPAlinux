@@ -1,0 +1,1 @@
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/resolv.conf

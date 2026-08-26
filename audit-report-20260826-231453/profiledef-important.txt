@@ -1,0 +1,7 @@
+9:install_dir="akspa"
+10:buildmodes=('iso')
+11:bootmodes=('bios.syslinux'
+13:pacman_conf="pacman.conf"
+14:airootfs_image_type="squashfs"
+15:airootfs_image_tool_options=('-comp' 'xz' '-Xbcj' 'x86' '-b' '1M' '-Xdict-size' '1M')
+17:file_permissions=(

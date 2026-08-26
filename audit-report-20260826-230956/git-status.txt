@@ -1,0 +1,27 @@
+ M releng/airootfs/etc/calamares/settings.conf
+ M releng/packages.x86_64
+?? akspa-audit-final.txt
+?? akspa-full-audit.sh
+?? audit-report-20260826-230943/
+?? audit-report-20260826-230956/
+?? releng/airootfs/etc/default/
+?? releng/airootfs/etc/skel/.config/breezerc
+?? releng/airootfs/etc/skel/.config/dolphinrc
+?? releng/airootfs/etc/skel/.config/kcminputrc
+?? releng/airootfs/etc/skel/.config/kdeglobals
+?? releng/airootfs/etc/skel/.config/kglobalshortcutsrc
+?? releng/airootfs/etc/skel/.config/kscreenlockerrc
+?? releng/airootfs/etc/skel/.config/kwinrc
+?? releng/airootfs/etc/skel/.config/plasma-org.kde.plasma.desktop-appletsrc
+?? releng/airootfs/etc/skel/.config/plasmarc
+?? releng/airootfs/etc/skel/.local/
+?? releng/airootfs/etc/skel/.zshrc
+?? releng/airootfs/usr/lib/
+?? releng/airootfs/usr/share/akspa/
+?? releng/airootfs/usr/share/color-schemes/
+?? releng/airootfs/usr/share/icons/
+?? releng/airootfs/usr/share/kwin-wayland/
+?? releng/airootfs/usr/share/kwin-x11/
+?? releng/airootfs/usr/share/plasma/
+?? releng/airootfs/usr/share/wallpapers/
+?? releng/packages.x86_64.backup

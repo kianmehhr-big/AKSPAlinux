@@ -1,0 +1,26 @@
+AKSPA Linux ISO Preflight Audit
+================================
+
+Date: Wed Aug 26 11:20:30 PM +0330 2026
+
+Project:
+/home/kskroyal/AKSPAlinux
+
+Profile:
+/home/kskroyal/AKSPAlinux/releng
+
+airootfs:
+/home/kskroyal/AKSPAlinux/releng/airootfs
+
+Packages:
+/home/kskroyal/AKSPAlinux/releng/packages.x86_64
+
+PASS=144
+WARN=50
+FAIL=0
+INFO=15
+
+KDE_NEW_USER=LIKELY
+
+Static verdict:
+PASS_WITH_WARNINGS

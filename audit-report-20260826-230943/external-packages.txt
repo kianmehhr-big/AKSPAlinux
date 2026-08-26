@@ -1,0 +1,2 @@
+25:calamares
+163:nvidia-dkms

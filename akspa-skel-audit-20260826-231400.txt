@@ -1,0 +1,161 @@
+==============================================
+ AKSPA Linux /etc/skel + KDE New User Audit
+==============================================
+
+Date: Wed Aug 26 11:14:00 PM +0330 2026
+Project: /home/kskroyal/AKSPAlinux
+airootfs: /home/kskroyal/AKSPAlinux/releng/airootfs
+SKEL: /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel
+
+
+===== 1. BASIC /etc/skel =====
+[PASS] /etc/skel exists
+
+===== 2. SKEL TREE =====
+d 755 kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config
+d 755 kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/hypr
+d 755 kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local
+d 755 kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share
+d 755 kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/effects/kwin4_effect_geometry_change
+d 755 kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/scripts/klear
+d 755 kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/scripts/kwin4_effect_geometry_change
+d 755 root:root /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin
+d 755 root:root /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/effects
+d 755 root:root /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/scripts
+f 644 kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/breezerc
+f 644 kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/dolphinrc
+f 644 kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kcminputrc
+f 644 kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kdeglobals
+f 644 kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kglobalshortcutsrc
+f 644 kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kscreenlockerrc
+f 644 kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kwinrc
+f 644 kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/plasma-org.kde.plasma.desktop-appletsrc
+f 644 kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/plasmarc
+f 644 kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.zshrc
+f 755 kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/hypr/hyprland.conf
+
+===== 3. KDE CONFIGURATION =====
+[PASS] SKEL .config exists
+KDE: /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/dolphinrc
+KDE: /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kcminputrc
+KDE: /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kdeglobals
+KDE: /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kglobalshortcutsrc
+KDE: /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kscreenlockerrc
+KDE: /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kwinrc
+KDE: /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/plasma-org.kde.plasma.desktop-appletsrc
+KDE: /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/plasmarc
+[PASS] Detected 8 KDE/Plasma configuration files
+
+===== 4. IMPORTANT PLASMA FILES =====
+[PASS] .config/kdeglobals exists
+[PASS] .config/kwinrc exists
+[PASS] .config/plasmarc exists
+[PASS] .config/plasma-org.kde.plasma.desktop-appletsrc exists
+[PASS] .config/kglobalshortcutsrc exists
+[PASS] .config/kcminputrc exists
+[INFO] .config/konsolerc not present
+[PASS] .config/dolphinrc exists
+
+===== 5. PLASMA WALLPAPER / DESKTOP =====
+[PASS] Plasma desktop applet configuration exists
+[PASS] Plasma desktop configuration contains wallpaper/containment data
+
+===== 6. GLOBAL THEME / ICON / CURSOR REFERENCES =====
+
+--- /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kdeglobals ---
+138:ColorScheme=thelast
+139:ColorSchemeHash=505367d758e2be89e366f02abc7be25d31cc0b37
+143:Theme=YAMIS
+149:widgetStyle=Darkly
+
+--- /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kwinrc ---
+44:theme=Klassy
+
+--- /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/plasmarc ---
+2:name=default
+5:name=air
+8:name=breeze-dark
+
+===== 7. SKEL OWNERSHIP =====
+[PASS] No unexpected SKEL ownership detected
+
+===== 8. WORLD-WRITABLE SKEL FILES =====
+[PASS] No world-writable SKEL files
+
+===== 9. EXECUTABLE FILES IN SKEL =====
+755 kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/hypr/hyprland.conf
+755 kskroyal:users /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.local/share/kwin/scripts/klear/build-applist.sh
+
+===== 10. SYMLINKS IN SKEL =====
+
+===== 11. BROKEN SYMLINKS IN SKEL =====
+[PASS] No broken SKEL symlinks
+
+===== 12. USER-SPECIFIC BUILD MACHINE PATHS =====
+[PASS] No AKSPA build-machine path found in SKEL
+
+===== 13. HARD-CODED HOME PATHS =====
+[PASS] No hard-coded /home/<user> paths found
+
+===== 14. USER CONFIG FILE TYPES =====
+      4 js
+      3 xml
+      3 ui
+      3 json
+      2 png
+      1 zshrc
+      1 sh
+      1 service
+      1 qml
+      1 plasmarc
+      1 path
+      1 LICENSE
+      1 kwinrc
+      1 kscreenlockerrc
+      1 kglobalshortcutsrc
+      1 kdeglobals
+      1 kcminputrc
+      1 dolphinrc
+      1 desktop-appletsrc
+      1 desktop
+      1 conf
+      1 breezerc
+
+===== 15. KDE/PLASMA PACKAGE-RELATED FILES =====
+[PASS] Runtime directory exists: /usr/share/plasma
+[INFO] Runtime directory not present in raw airootfs: /usr/share/kde
+[INFO] Runtime directory not present in raw airootfs: /usr/share/kf6
+[INFO] Runtime directory not present in raw airootfs: /usr/share/sddm
+
+===== 16. SDDM CONFIG =====
+[PASS] SDDM configuration directory exists
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/sddm.conf.d/autologin.conf
+
+===== 17. PLASMA SESSION FILES =====
+[WARN] No Plasma session desktop file in raw airootfs (may be supplied by package at build time)
+
+===== 18. SHELL CONFIG =====
+[PASS] .zshrc exists
+
+===== 19. KDE CONFIG FILE SIZES =====
+0 bytes /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/breezerc
+34 bytes /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kscreenlockerrc
+40 bytes /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kcminputrc
+177 bytes /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/dolphinrc
+218 bytes /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/plasmarc
+793 bytes /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kwinrc
+4119 bytes /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kdeglobals
+16522 bytes /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/kglobalshortcutsrc
+174912 bytes /home/kskroyal/AKSPAlinux/releng/airootfs/etc/skel/.config/plasma-org.kde.plasma.desktop-appletsrc
+
+==============================================
+ FINAL SKEL AUDIT
+==============================================
+PASS=20
+WARN=1
+FAIL=0
+
+REPORT:
+/home/kskroyal/AKSPAlinux/akspa-skel-audit-20260826-231400.txt
+
+STATIC RESULT: PASS

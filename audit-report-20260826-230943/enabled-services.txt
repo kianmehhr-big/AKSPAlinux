@@ -1,0 +1,15 @@
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/choose-mirror.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/hv_fcopy_daemon.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/hv_kvp_daemon.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/hv_vss_daemon.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/iwd.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/livecd-talk.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/ModemManager.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/pacman-init.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/seatd.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/sshd.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/systemd-networkd.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/systemd-resolved.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/vboxservice.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/vmtoolsd.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/multi-user.target.wants/vmware-vmblock-fuse.service

@@ -1,0 +1,4 @@
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/choose-mirror.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/livecd-alsa-unmuter.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/livecd-talk.service
+/home/kskroyal/AKSPAlinux/releng/airootfs/etc/systemd/system/pacman-init.service
